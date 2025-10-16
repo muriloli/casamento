@@ -1,0 +1,2438 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&L - Nosso Planejamento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cor-branco-gelo: #FDFCFB;
+            --cor-dourado: #D2B48C;
+            --cor-dourado-escuro: #B8956A;
+            --cor-bege: #F5EDE0;
+            --cor-cinza: #555;
+            --cor-cinza-claro: #888;
+            --cor-cinza-muito-claro: #f0f0f0;
+            --cor-verde-suave: #d4edda;
+            --sombra: 0 2px 12px rgba(0, 0, 0, 0.08);
+            --sombra-hover: 0 4px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--cor-branco-gelo) 0%, var(--cor-bege) 100%);
+            color: var(--cor-cinza);
+            min-height: 100vh;
+        }
+
+        /* Notificação de Salvamento */
+        .save-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--cor-verde-suave);
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: var(--sombra-hover);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 3000;
+            animation: slideInRight 0.3s ease;
+            border-left: 4px solid #28a745;
+        }
+
+        .save-notification.show {
+            display: flex;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(400px); opacity: 0; }
+        }
+
+        /* Botões Utilitários */
+        .utility-buttons {
+            padding: 20px 15px;
+            border-top: 2px solid var(--cor-bege);
+            background: var(--cor-branco-gelo);
+            flex-shrink: 0;
+        }
+
+        .utility-btn {
+            width: 100%;
+            background: white;
+            color: var(--cor-cinza);
+            border: 2px solid var(--cor-dourado);
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--sombra);
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .utility-btn:last-child {
+            margin-bottom: 0;
+        }
+
+        .utility-btn:hover {
+            background: var(--cor-dourado);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-hover);
+        }
+
+        .utility-btn-danger {
+            border-color: #e8a0a0;
+            color: #d98585;
+        }
+
+        .utility-btn-danger:hover {
+            background: #e8a0a0;
+            color: white;
+        }
+
+        /* Menu Lateral */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+            padding: 30px 0 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 0 25px 30px;
+            border-bottom: 2px solid var(--cor-bege);
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            color: var(--cor-dourado);
+            margin-bottom: 5px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.9em;
+            color: var(--cor-cinza-claro);
+        }
+
+        .sidebar-nav {
+            margin-top: 30px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            color: var(--cor-cinza);
+        }
+
+        .nav-item:hover {
+            background: var(--cor-bege);
+        }
+
+        .nav-item.active {
+            background: var(--cor-bege);
+            border-left-color: var(--cor-dourado);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            font-size: 1.5em;
+            margin-right: 15px;
+            width: 30px;
+        }
+
+        /* Menu Mobile */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--cor-dourado);
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            box-shadow: var(--sombra);
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 15px;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--sombra);
+            text-align: center;
+        }
+
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2em;
+            color: var(--cor-cinza);
+            margin-bottom: 5px;
+        }
+
+        .page-subtitle {
+            color: var(--cor-cinza-claro);
+            font-size: 0.95em;
+        }
+
+        .motivational-quote {
+            color: var(--cor-dourado);
+            font-style: italic;
+            margin-top: 10px;
+            font-size: 1.05em;
+        }
+
+        /* Seções */
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--sombra);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            box-shadow: var(--sombra-hover);
+            transform: translateY(-3px);
+        }
+
+        .card-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 0.9em;
+            color: var(--cor-cinza-claro);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-value {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--cor-dourado);
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            background: var(--cor-cinza-muito-claro);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--cor-dourado), var(--cor-dourado-escuro));
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .progress-label {
+            font-size: 0.85em;
+            color: var(--cor-cinza-claro);
+            margin-top: 8px;
+        }
+
+        /* Data do Casamento */
+        .date-config {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--sombra);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .date-config label {
+            font-weight: 500;
+            color: var(--cor-cinza);
+        }
+
+        .date-config input {
+            padding: 10px 15px;
+            border: 2px solid var(--cor-cinza-muito-claro);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95em;
+        }
+
+        /* Cards de Categoria */
+        .categoria-card {
+            background: white;
+            border-radius: 15px;
+            padding: 0;
+            margin-bottom: 20px;
+            box-shadow: var(--sombra);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .categoria-card:hover {
+            box-shadow: var(--sombra-hover);
+        }
+
+        .categoria-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            background: linear-gradient(135deg, var(--cor-bege) 0%, var(--cor-branco-gelo) 100%);
+            cursor: pointer;
+            border-bottom: 1px solid var(--cor-cinza-muito-claro);
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+
+        .categoria-header:hover {
+            background: linear-gradient(135deg, var(--cor-dourado) 0%, var(--cor-bege) 100%);
+            transform: translateY(-1px);
+        }
+
+        .categoria-header:active {
+            transform: translateY(0);
+        }
+
+        .categoria-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            color: var(--cor-cinza);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .categoria-icone {
+            font-size: 1.3em;
+        }
+
+        .categoria-acoes {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .categoria-conteudo {
+            overflow: hidden;
+            opacity: 0;
+            max-height: 0;
+            transform: translateY(-10px);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0 25px;
+        }
+
+        .categoria-conteudo.expanded {
+            opacity: 1;
+            max-height: 2000px;
+            transform: translateY(0);
+            padding: 25px;
+        }
+
+        /* Botões */
+        .btn {
+            background: var(--cor-dourado);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--cor-dourado-escuro);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(210, 180, 140, 0.3);
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.85em;
+        }
+
+        .btn-danger {
+            background: #e8a0a0;
+        }
+
+        .btn-danger:hover {
+            background: #d98585;
+        }
+
+        .btn-add-inline {
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        /* Tabelas */
+        .tabela-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--cor-dourado) 0%, var(--cor-dourado-escuro) 100%);
+        }
+
+        th {
+            color: white;
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--cor-cinza-muito-claro);
+            transition: background 0.2s ease;
+            animation: fadeInRow 0.3s ease;
+        }
+
+        @keyframes fadeInRow {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        tbody tr:nth-child(even) {
+            background: var(--cor-branco-gelo);
+        }
+
+        tbody tr:hover {
+            background: var(--cor-bege);
+        }
+
+        td {
+            padding: 12px;
+        }
+
+        td input, td select, td textarea {
+            width: 100%;
+            border: 1px solid var(--cor-cinza-muito-claro);
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9em;
+            background: white;
+            color: var(--cor-cinza);
+            transition: border-color 0.3s ease;
+        }
+
+        td input:focus, td select:focus, td textarea:focus {
+            outline: none;
+            border-color: var(--cor-dourado);
+            box-shadow: 0 0 0 3px rgba(210, 180, 140, 0.1);
+        }
+
+        td textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        /* Detalhes Financeiros */
+        .detalhes-financeiros {
+            margin-top: 15px;
+            padding: 20px;
+            background: var(--cor-branco-gelo);
+            border-radius: 10px;
+            border-left: 4px solid var(--cor-dourado);
+        }
+
+        .detalhes-financeiros h4 {
+            color: var(--cor-cinza);
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .campo-financeiro {
+            margin-bottom: 15px;
+        }
+
+        .campo-financeiro label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--cor-cinza);
+            font-size: 0.9em;
+        }
+
+        .campo-financeiro input, .campo-financeiro select {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            border: 1px solid var(--cor-cinza-muito-claro);
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .parcelas-lista {
+            margin-top: 15px;
+        }
+
+        .parcela-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            gap: 15px;
+        }
+
+        .parcela-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .parcela-item.paga {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-conteudo {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            color: var(--cor-dourado);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--cor-cinza);
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--cor-cinza-muito-claro);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--cor-dourado);
+        }
+
+        .modal-acoes {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        /* Botões de Ação na Página */
+        .actions-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 0 15px;
+        }
+
+        .btn-add-categoria {
+            background: var(--cor-dourado);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: var(--sombra);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add-categoria:hover {
+            background: var(--cor-dourado-escuro);
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-hover);
+        }
+
+        /* Resumo */
+        .resumo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .resumo-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--sombra);
+        }
+
+        .resumo-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6em;
+            color: var(--cor-cinza);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--cor-bege);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .resumo-item {
+            padding: 20px;
+            margin-bottom: 15px;
+            background: var(--cor-branco-gelo);
+            border-radius: 10px;
+            border-left: 4px solid var(--cor-dourado);
+        }
+
+        .resumo-categoria {
+            font-weight: 600;
+            color: var(--cor-cinza);
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .resumo-fornecedor {
+            color: var(--cor-cinza-claro);
+            font-size: 0.95em;
+            margin-bottom: 12px;
+        }
+
+        .resumo-valor {
+            font-weight: 600;
+            color: var(--cor-dourado);
+            font-size: 1.2em;
+        }
+
+        /* Responsividade */
+        @media (max-width: 968px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-visible {
+                transform: translateX(0);
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .mobile-overlay.show {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 80px 15px 20px;
+            }
+
+            .page-title {
+                font-size: 1.5em;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .resumo-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .save-notification {
+                top: 70px;
+                right: 10px;
+                left: 10px;
+            }
+
+            .categoria-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .categoria-acoes {
+                width: 100%;
+            }
+
+            table {
+                font-size: 0.85em;
+            }
+
+            th, td {
+                padding: 8px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+            <!-- Notificação de Salvamento -->
+    <div id="saveNotification" class="save-notification">
+        <span>💾</span>
+        <span>Alterações salvas automaticamente</span>
+    </div>
+
+    <!-- Toggle Mobile -->
+    <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+
+    <!-- Overlay Mobile -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Input oculto para importar backup -->
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importarBackup(event)">
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">D&L</div>
+            <div class="sidebar-subtitle">Nosso Planejamento</div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-item active" onclick="navegarPara('dashboard', this)">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">Painel Inicial</span>
+            </div>
+            <div class="nav-item" onclick="navegarPara('casamento', this)">
+                <span class="nav-icon">💍</span>
+                <span class="nav-text">Casamento</span>
+            </div>
+            <div class="nav-item" onclick="navegarPara('casa', this)">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Casa Nova</span>
+            </div>
+            <div class="nav-item" onclick="navegarPara('resumo', this)">
+                <span class="nav-icon">📋</span>
+                <span class="nav-text">Resumo Financeiro</span>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="main-content" id="mainContent">
+        
+        <!-- Dashboard -->
+        <section id="dashboard" class="section active">
+            <div class="page-header">
+                <h1 class="page-title">Bem-vindos, Douglas & Laura! 💕</h1>
+                <p class="page-subtitle">Visão geral do planejamento do casamento e da casa nova</p>
+                <p class="motivational-quote">Cada passo é mais perto do grande dia 💕</p>
+            </div>
+
+            <div class="date-config">
+                <label>📅 Data do Casamento:</label>
+                <input type="date" id="dataCasamento" onchange="salvarDataCasamento()">
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-icon">⏳</div>
+                    <div class="card-title">Dias até o Casamento</div>
+                    <div class="card-value" id="diasRestantes">--</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-icon">💍</div>
+                    <div class="card-title">Progresso do Casamento</div>
+                    <div class="card-value" id="progressoCasamento">0%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressoBarraCasamento"></div>
+                    </div>
+                    <div class="progress-label" id="labelCasamento">0 de 0 categorias com fornecedor escolhido</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-icon">🏠</div>
+                    <div class="card-title">Progresso da Casa</div>
+                    <div class="card-value" id="progressoCasa">0%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressoBarraCasa"></div>
+                    </div>
+                    <div class="progress-label" id="labelCasa">0 de 0 itens já temos/ganharemos</div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-icon">💰</div>
+                    <div class="card-title">Parcelas Pagas</div>
+                    <div class="card-value" id="statusPagamento">--</div>
+                    <div class="progress-label" id="labelPagamento">Aguardando dados...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Casamento -->
+        <section id="casamento" class="section">
+            <div class="page-header">
+                <h1 class="page-title">💍 Casamento</h1>
+                <p class="page-subtitle">Fornecedores e orçamentos por categoria</p>
+            </div>
+
+            <div class="actions-bar">
+                <button class="btn-add-categoria" onclick="abrirModalNovaCategoria()">
+                    ➕ Adicionar Categoria
+                </button>
+            </div>
+
+            <div id="categorias-casamento"></div>
+        </section>
+
+        <!-- Casa Nova -->
+        <section id="casa" class="section">
+            <div class="page-header">
+                <h1 class="page-title">🏠 Casa Nova</h1>
+                <p class="page-subtitle">Organização por cômodo</p>
+            </div>
+
+            <div class="actions-bar">
+                <button class="btn-add-categoria" onclick="abrirModalNovoComodo()">
+                    ➕ Adicionar Cômodo
+                </button>
+            </div>
+
+            <div id="comodos-casa"></div>
+        </section>
+
+        <!-- Resumo -->
+        <section id="resumo" class="section">
+            <div class="page-header">
+                <h1 class="page-title">📋 Resumo Financeiro</h1>
+                <p class="page-subtitle">Visão consolidada - apenas fornecedores escolhidos</p>
+            </div>
+
+            <div class="resumo-grid">
+                <div class="resumo-section">
+                    <h3 class="resumo-titulo">💍 Resumo do Casamento</h3>
+                    <div id="resumo-casamento"></div>
+                </div>
+
+                <div class="resumo-section">
+                    <h3 class="resumo-titulo">🏠 Resumo da Casa</h3>
+                    <div id="resumo-casa"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <!-- Modal Nova Categoria -->
+    <div id="modal-nova-categoria" class="modal">
+        <div class="modal-conteudo">
+            <h2 class="modal-titulo">➕ Nova Categoria</h2>
+            <div class="form-group">
+                <label>Nome da Categoria:</label>
+                <input type="text" id="input-nova-categoria" placeholder="Ex: Bolo, Bebidas, Decoração...">
+            </div>
+            <div class="form-group">
+                <label>Ícone (emoji):</label>
+                <input type="text" id="input-icone-categoria" placeholder="Ex: 🎂, 🍾, 🎈..." maxlength="2">
+            </div>
+            <div class="modal-acoes">
+                <button class="btn btn-danger" onclick="fecharModais()">Cancelar</button>
+                <button class="btn" onclick="adicionarNovaCategoria()">Adicionar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Novo Cômodo -->
+    <div id="modal-novo-comodo" class="modal">
+        <div class="modal-conteudo">
+            <h2 class="modal-titulo">➕ Novo Cômodo</h2>
+            <div class="form-group">
+                <label>Nome do Cômodo:</label>
+                <input type="text" id="input-novo-comodo" placeholder="Ex: Closet, Escritório, Área de Serviço...">
+            </div>
+            <div class="modal-acoes">
+                <button class="btn btn-danger" onclick="fecharModais()">Cancelar</button>
+                <button class="btn" onclick="adicionarNovoComodo()">Adicionar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // ============================================
+        // 🗄️ CONFIGURAÇÃO DO SUPABASE
+        // ============================================
+
+        const supabaseConfig = {
+            url: 'https://mehdukkmxrkdbcbsgrct.supabase.co',
+            anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1laGR1a2tteHJrZGJjYnNncmN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MzQwMzQsImV4cCI6MjA3NjIxMDAzNH0.qW1YxnU_n-2dXdm5tXTiGK4nqPr-OXu2KOrUUQ1SYNo'
+        };
+
+        // Variáveis do Supabase
+        let supabase = null;
+        let supabaseAtivo = false;
+        let primeiraConexao = true;
+
+        // Inicializar Supabase
+        async function inicializarSupabase() {
+            try {
+                supabase = window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey);
+
+                // Verificar conexão
+                const { data, error } = await supabase.from('configuracoes').select('count').limit(1);
+
+                if (error && error.code !== 'PGRST116') { // PGRST116 = tabela não existe (ok para primeira vez)
+                    console.log('⚠️ Aviso na conexão inicial:', error.message);
+                    // Continuar mesmo com erro - tabelas podem ainda não existir
+                }
+
+                supabaseAtivo = true;
+                console.log('✅ Supabase inicializado com sucesso!');
+                mostrarNotificacao('🗄️ Supabase conectado!');
+
+                // Carregar dados diretamente
+                await carregarDadosSupabase();
+
+                return true;
+            } catch (error) {
+                console.error('❌ Erro ao inicializar Supabase:', error);
+                mostrarNotificacao('❌ Erro ao conectar Supabase - usando localStorage');
+                supabaseAtivo = false;
+                return false;
+            }
+        }
+
+        // ============================================
+        // FUNÇÕES DO SUPABASE
+        // ============================================
+
+        // Criar tabelas se não existirem (manual via SQL Editor do Supabase)
+        async function criarTabelasSeNecessario() {
+            try {
+                console.log('🔧 Verificando tabelas...');
+
+                // Tentar fazer uma query simples para verificar se as tabelas existem
+                const { data: configTest } = await supabase
+                    .from('configuracoes')
+                    .select('count')
+                    .limit(1);
+
+                const { data: categoriasTest } = await supabase
+                    .from('categorias_casamento')
+                    .select('count')
+                    .limit(1);
+
+                const { data: comodosTest } = await supabase
+                    .from('comodos_casa')
+                    .select('count')
+                    .limit(1);
+
+                console.log('✅ Tabelas verificadas');
+            } catch (error) {
+                console.log('⚠️ Algumas tabelas podem não existir ainda. Crie manualmente no Supabase:');
+                console.log(`
+SQL para criar as tabelas:
+
+-- Tabela de configurações
+CREATE TABLE IF NOT EXISTS configuracoes (
+    id SERIAL PRIMARY KEY,
+    chave VARCHAR UNIQUE NOT NULL,
+    valor JSONB,
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabela de categorias de casamento
+CREATE TABLE IF NOT EXISTS categorias_casamento (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR NOT NULL UNIQUE,
+    icone VARCHAR(10),
+    fornecedores JSONB DEFAULT '[]',
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabela de cômodos da casa
+CREATE TABLE IF NOT EXISTS comodos_casa (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR NOT NULL UNIQUE,
+    itens JSONB DEFAULT '[]',
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+                `);
+            }
+        }
+
+        // Carregar dados do Supabase
+        async function carregarDadosSupabase() {
+            if (!supabaseAtivo) {
+                carregarDados(); // Fallback para localStorage
+                return;
+            }
+
+            try {
+                console.log('📥 Carregando dados do Supabase...');
+
+                // Carregar configurações
+                const { data: configs } = await supabase
+                    .from('configuracoes')
+                    .select('*');
+
+                if (configs) {
+                    const dataConfig = configs.find(c => c.chave === 'data_casamento');
+                    if (dataConfig) {
+                        dados.dataCasamento = dataConfig.valor;
+                    }
+                }
+
+                // Carregar categorias de casamento
+                const { data: categorias } = await supabase
+                    .from('categorias_casamento')
+                    .select('*')
+                    .order('nome', { ascending: true });
+
+                if (categorias && categorias.length > 0) {
+                    dados.casamento = {};
+                    categorias.forEach(cat => {
+                        dados.casamento[cat.nome] = cat.fornecedores || [];
+                        if (cat.icone) {
+                            iconesCategoria[cat.nome] = cat.icone;
+                        }
+                    });
+                } else if (!window.dadosInicializados) {
+                    // Inicializar com categorias padrão apenas na primeira vez
+                    await inicializarDadosPadrao();
+                    window.dadosInicializados = true;
+                }
+
+                // Carregar cômodos da casa
+                const { data: comodos } = await supabase
+                    .from('comodos_casa')
+                    .select('*')
+                    .order('nome', { ascending: true });
+
+                if (comodos && comodos.length > 0) {
+                    dados.casa = {};
+                    comodos.forEach(comodo => {
+                        dados.casa[comodo.nome] = comodo.itens || [];
+                    });
+                } else if (!window.dadosInicializados) {
+                    // Inicializar com cômodos padrão apenas na primeira vez
+                    await inicializarDadosPadrao();
+                    window.dadosInicializados = true;
+                }
+
+                console.log('✅ Dados carregados do Supabase');
+                renderizarTudo();
+
+                // Configurar real-time se ainda não configurado
+                if (!window.realTimeConfigurado) {
+                    configurarRealTime();
+                    window.realTimeConfigurado = true;
+                }
+
+            } catch (error) {
+                console.error('❌ Erro ao carregar do Supabase:', error);
+                mostrarNotificacao('⚠️ Erro ao carregar - usando dados locais');
+                carregarDados(); // Fallback para localStorage
+            }
+        }
+
+        // Inicializar dados padrão
+        async function inicializarDadosPadrao() {
+            try {
+                // Inserir categorias padrão de casamento
+                const categoriasDefault = [
+                    { nome: 'Buffet', icone: '🍽️', fornecedores: [] },
+                    { nome: 'Decoração', icone: '💐', fornecedores: [] },
+                    { nome: 'Fotografia & Vídeo', icone: '📷', fornecedores: [] },
+                    { nome: 'Música', icone: '🎵', fornecedores: [] },
+                    { nome: 'Trajes', icone: '👗', fornecedores: [] },
+                    { nome: 'Convites', icone: '✉️', fornecedores: [] },
+                    { nome: 'Lembrancinhas', icone: '🎁', fornecedores: [] },
+                    { nome: 'Dia da Noiva', icone: '💄', fornecedores: [] },
+                    { nome: 'Lua de Mel', icone: '✈️', fornecedores: [] }
+                ];
+
+                const { error: catError } = await supabase.from('categorias_casamento').upsert(categoriasDefault, { onConflict: 'nome' });
+                if (catError) console.log('ℹ️ Categorias já existem:', catError.message);
+
+                // Inserir cômodos padrão da casa
+                const comodosDefault = [
+                    { nome: 'Cozinha', itens: [] },
+                    { nome: 'Quarto', itens: [] },
+                    { nome: 'Sala', itens: [] },
+                    { nome: 'Banheiro', itens: [] },
+                    { nome: 'Lavanderia', itens: [] },
+                    { nome: 'Varanda', itens: [] }
+                ];
+
+                const { error: comError } = await supabase.from('comodos_casa').upsert(comodosDefault, { onConflict: 'nome' });
+                if (comError) console.log('ℹ️ Cômodos já existem:', comError.message);
+
+                console.log('✅ Dados padrão inicializados');
+            } catch (error) {
+                console.error('❌ Erro ao inicializar dados padrão:', error);
+            }
+        }
+
+        // ============================================
+        // CONFIGURAÇÃO E ESTRUTURA DE DADOS
+        // ============================================
+
+        // Ícones personalizados por categoria
+        const iconesCategoria = {
+            'Buffet': '🍽️',
+            'Decoração': '💐',
+            'Fotografia & Vídeo': '📷',
+            'Música': '🎵',
+            'Convites': '✉️',
+            'Dia da Noiva': '💄',
+            'Trajes': '👗',
+            'Lembrancinhas': '🎁',
+            'Lua de Mel': '✈️'
+        };
+
+        // Estrutura principal de dados
+        let dados = {
+            casamento: {
+                'Buffet': [],
+                'Decoração': [],
+                'Fotografia & Vídeo': [],
+                'Música': [],
+                'Trajes': [],
+                'Convites': [],
+                'Lembrancinhas': [],
+                'Dia da Noiva': [],
+                'Lua de Mel': []
+            },
+            casa: {
+                'Cozinha': [],
+                'Quarto': [],
+                'Sala': [],
+                'Banheiro': [],
+                'Lavanderia': [],
+                'Varanda': []
+            },
+            dataCasamento: ''
+        };
+
+        // ============================================
+        // SALVAMENTO AUTOMÁTICO (localStorage)
+        // ============================================
+        
+        // NOTA: Esta seção usa localStorage para salvamento local.
+        // FUTURA INTEGRAÇÃO COM FIREBASE:
+        // - Substituir localStorage.setItem() por firebase.database().ref().set()
+        // - Substituir localStorage.getItem() por firebase.database().ref().on('value')
+        // - Adicionar sincronização em tempo real entre múltiplos usuários
+
+        async function salvarDados() {
+            try {
+                if (supabaseAtivo) {
+                    await salvarDadosSupabase();
+                } else {
+                    // Fallback para localStorage
+                    localStorage.setItem('painelDL', JSON.stringify(dados));
+                    console.log('✅ Dados salvos no localStorage (fallback)');
+                }
+
+                mostrarNotificacaoSalvamento();
+            } catch (error) {
+                console.error('❌ Erro ao salvar:', error);
+                // Tentar salvar no localStorage como backup
+                localStorage.setItem('painelDL', JSON.stringify(dados));
+                mostrarNotificacao('⚠️ Salvo localmente - erro na sincronização');
+            }
+        }
+
+        async function salvarDadosSupabase() {
+            try {
+                console.log('💾 Salvando no Supabase...');
+
+                // Salvar data do casamento
+                if (dados.dataCasamento) {
+                    const { error: configError } = await supabase
+                        .from('configuracoes')
+                        .upsert({
+                            chave: 'data_casamento',
+                            valor: dados.dataCasamento
+                        });
+                    if (configError) console.error('❌ Erro ao salvar configuração:', configError);
+                }
+
+                // Salvar categorias de casamento
+                for (const [nomeCategoria, fornecedores] of Object.entries(dados.casamento)) {
+                    const icone = iconesCategoria[nomeCategoria] || '💼';
+                    console.log(`💾 Salvando categoria: ${nomeCategoria} com ${fornecedores.length} fornecedores`);
+
+                    // Verificar se categoria já existe
+                    const { data: existe } = await supabase
+                        .from('categorias_casamento')
+                        .select('id')
+                        .eq('nome', nomeCategoria)
+                        .single();
+
+                    if (existe) {
+                        // UPDATE categoria existente
+                        const { error: updateError } = await supabase
+                            .from('categorias_casamento')
+                            .update({
+                                icone: icone,
+                                fornecedores: fornecedores
+                            })
+                            .eq('nome', nomeCategoria);
+
+                        if (updateError) {
+                            console.error(`❌ Erro ao atualizar categoria ${nomeCategoria}:`, updateError);
+                        } else {
+                            console.log(`✅ Categoria ${nomeCategoria} atualizada com sucesso`);
+                        }
+                    } else {
+                        // INSERT nova categoria
+                        const { error: insertError } = await supabase
+                            .from('categorias_casamento')
+                            .insert({
+                                nome: nomeCategoria,
+                                icone: icone,
+                                fornecedores: fornecedores
+                            });
+
+                        if (insertError) {
+                            console.error(`❌ Erro ao inserir categoria ${nomeCategoria}:`, insertError);
+                        } else {
+                            console.log(`✅ Categoria ${nomeCategoria} inserida com sucesso`);
+                        }
+                    }
+                }
+
+                // Salvar cômodos da casa
+                for (const [nomeComodo, itens] of Object.entries(dados.casa)) {
+                    // Verificar se cômodo já existe
+                    const { data: existe } = await supabase
+                        .from('comodos_casa')
+                        .select('id')
+                        .eq('nome', nomeComodo)
+                        .single();
+
+                    if (existe) {
+                        // UPDATE cômodo existente
+                        const { error: updateError } = await supabase
+                            .from('comodos_casa')
+                            .update({ itens: itens })
+                            .eq('nome', nomeComodo);
+
+                        if (updateError) {
+                            console.error(`❌ Erro ao atualizar cômodo ${nomeComodo}:`, updateError);
+                        }
+                    } else {
+                        // INSERT novo cômodo
+                        const { error: insertError } = await supabase
+                            .from('comodos_casa')
+                            .insert({
+                                nome: nomeComodo,
+                                itens: itens
+                            });
+
+                        if (insertError) {
+                            console.error(`❌ Erro ao inserir cômodo ${nomeComodo}:`, insertError);
+                        }
+                    }
+                }
+
+                console.log('✅ Dados salvos no Supabase');
+            } catch (error) {
+                console.error('❌ Erro ao salvar no Supabase:', error);
+                throw error;
+            }
+        }
+
+        async function carregarDados() {
+            try {
+                if (supabaseAtivo) {
+                    await carregarDadosSupabase();
+                } else {
+                    // Fallback para localStorage
+                    const dadosSalvos = localStorage.getItem('painelDL');
+                    if (dadosSalvos) {
+                        dados = JSON.parse(dadosSalvos);
+                        console.log('📥 Dados carregados do localStorage (fallback)');
+                    }
+                    renderizarTudo();
+                }
+            } catch (error) {
+                console.error('❌ Erro ao carregar:', error);
+                // Fallback para localStorage
+                const dadosSalvos = localStorage.getItem('painelDL');
+                if (dadosSalvos) {
+                    dados = JSON.parse(dadosSalvos);
+                    console.log('📥 Dados carregados do localStorage (backup)');
+                }
+                renderizarTudo();
+            }
+        }
+
+        function mostrarNotificacaoSalvamento() {
+            const notification = document.getElementById('saveNotification');
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    notification.style.animation = '';
+                }, 300);
+            }, 2000);
+        }
+
+        // ============================================
+        // NAVEGAÇÃO ENTRE SEÇÕES
+        // ============================================
+
+        function navegarPara(secaoId, element) {
+            // Remover active de todas as seções
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            // Ativar seção selecionada
+            document.getElementById(secaoId).classList.add('active');
+            element.classList.add('active');
+            
+            // Fechar sidebar no mobile
+            if (window.innerWidth <= 968) {
+                toggleSidebar();
+            }
+            
+            // Atualizar conteúdo se necessário
+            if (secaoId === 'resumo') {
+                atualizarResumo();
+            } else if (secaoId === 'dashboard') {
+                atualizarDashboard();
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            sidebar.classList.toggle('mobile-visible');
+            overlay.classList.toggle('show');
+        }
+
+        // ============================================
+        // FORMATAÇÃO AUTOMÁTICA
+        // ============================================
+
+        function formatarMoeda(valor) {
+            const numero = parseFloat(valor.toString().replace(/[^\d]/g, '')) / 100;
+            if (isNaN(numero)) return '';
+            return numero.toLocaleString('pt-BR', { 
+                style: 'currency', 
+                currency: 'BRL' 
+            });
+        }
+
+        function aplicarMascaraMoeda(input) {
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^\d]/g, '');
+                if (value) {
+                    e.target.value = formatarMoeda(value);
+                }
+            });
+        }
+
+        function aplicarMascaraData(input) {
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.substring(0, 2) + '/' + value.substring(2);
+                }
+                if (value.length >= 5) {
+                    value = value.substring(0, 5) + '/' + value.substring(3, 9);
+                }
+                e.target.value = value.substring(0, 10);
+            });
+        }
+
+        // ============================================
+        // RENDERIZAÇÃO
+        // ============================================
+
+        function renderizarTudo() {
+            if (dados.dataCasamento) {
+                document.getElementById('dataCasamento').value = dados.dataCasamento;
+            }
+            
+            renderizarCasamento();
+            renderizarCasa();
+            atualizarDashboard();
+            atualizarResumo();
+        }
+
+        function salvarDataCasamento() {
+            dados.dataCasamento = document.getElementById('dataCasamento').value;
+            salvarDados();
+            atualizarDashboard();
+        }
+
+        // ============================================
+        // CASAMENTO
+        // ============================================
+
+        function renderizarCasamento() {
+            const container = document.getElementById('categorias-casamento');
+            container.innerHTML = '';
+
+            // Ordenar categorias alfabeticamente
+            const categoriasOrdenadas = Object.entries(dados.casamento)
+                .sort(([a], [b]) => a.localeCompare(b));
+
+            for (const [categoria, fornecedores] of categoriasOrdenadas) {
+                const card = criarCardCasamento(categoria, fornecedores);
+                container.appendChild(card);
+            }
+        }
+
+        function criarCardCasamento(categoria, fornecedores) {
+            const card = document.createElement('div');
+            card.className = 'categoria-card';
+            const idConteudo = `conteudo-casamento-${categoria.replace(/\s/g, '-')}`;
+            const icone = iconesCategoria[categoria] || '💼';
+
+            card.innerHTML = `
+                <div class="categoria-header" onclick="toggleCategoria('${idConteudo}')">
+                    <div class="categoria-titulo">
+                        <span class="categoria-icone">${icone}</span>${categoria}
+                        <span class="expand-indicator" style="margin-left: 10px; transition: transform 0.25s ease;">▼</span>
+                    </div>
+                    <div class="categoria-acoes">
+                        <button class="btn btn-small" onclick="event.stopPropagation(); adicionarFornecedor('${categoria}', '${idConteudo}')">+ Fornecedor</button>
+                        <button class="btn btn-small btn-danger" onclick="event.stopPropagation(); excluirCategoria('${categoria}')">🗑️ Excluir</button>
+                    </div>
+                </div>
+                <div id="${idConteudo}" class="categoria-conteudo">
+                    ${criarConteudoCasamento(categoria, fornecedores, idConteudo)}
+                </div>
+            `;
+
+            return card;
+        }
+
+        function criarConteudoCasamento(categoria, fornecedores, idConteudo) {
+            let html = '<div class="tabela-wrapper"><table><thead><tr>';
+            html += '<th>Fornecedor</th><th>Contato</th><th>Status</th><th>Ações</th>';
+            html += '</tr></thead><tbody id="tbody-' + categoria.replace(/\s/g, '-') + '">';
+
+            fornecedores.forEach((fornecedor, index) => {
+                html += criarLinhaFornecedor(categoria, index, fornecedor);
+            });
+
+            html += '</tbody></table></div>';
+            html += `<button class="btn btn-add-inline" onclick="adicionarFornecedor('${categoria}', '${idConteudo}')">+ Novo Fornecedor</button>`;
+
+            return html;
+        }
+
+        function criarLinhaFornecedor(categoria, index, fornecedor) {
+            let html = `
+                <tr data-index="${index}">
+                    <td><input type="text" value="${fornecedor.nome || ''}" 
+                        onchange="atualizarFornecedor('${categoria}', ${index}, 'nome', this.value)" 
+                        placeholder="Nome do fornecedor"></td>
+                    <td><input type="text" value="${fornecedor.contato || ''}" 
+                        onchange="atualizarFornecedor('${categoria}', ${index}, 'contato', this.value)" 
+                        placeholder="Tel, email, @instagram"></td>
+                    <td>
+                        <select onchange="atualizarFornecedor('${categoria}', ${index}, 'status', this.value); renderizarCasamento();">
+                            <option value="Cotando" ${fornecedor.status === 'Cotando' ? 'selected' : ''}>Cotando</option>
+                            <option value="Escolhido" ${fornecedor.status === 'Escolhido' ? 'selected' : ''}>Escolhido ✓</option>
+                        </select>
+                    </td>
+                    <td><button class="btn-small btn-danger" onclick="removerFornecedor('${categoria}', ${index})">✕</button></td>
+                </tr>
+            `;
+
+            if (fornecedor.status === 'Escolhido') {
+                html += `
+                    <tr>
+                        <td colspan="4">
+                            ${criarDetalhesFinanceiros(categoria, index, fornecedor)}
+                        </td>
+                    </tr>
+                `;
+            }
+
+            return html;
+        }
+
+        function criarDetalhesFinanceiros(categoria, index, fornecedor) {
+            const valorFormatado = fornecedor.valorTotal ? formatarMoeda(fornecedor.valorTotal) : '';
+            
+            let html = `
+                <div class="detalhes-financeiros">
+                    <h4>💰 Detalhes Financeiros</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="campo-financeiro">
+                            <label>Valor Total:</label>
+                            <input type="text" class="campo-moeda" value="${valorFormatado}" 
+                                placeholder="R$ 0,00" 
+                                onblur="atualizarCampoMoeda('${categoria}', ${index}, this.value)">
+                        </div>
+                        <div class="campo-financeiro">
+                            <label>Forma de Pagamento:</label>
+                            <select onchange="atualizarFornecedor('${categoria}', ${index}, 'formaPagamento', this.value)">
+                                <option value="À vista" ${fornecedor.formaPagamento === 'À vista' ? 'selected' : ''}>À vista</option>
+                                <option value="Parcelado" ${fornecedor.formaPagamento === 'Parcelado' ? 'selected' : ''}>Parcelado</option>
+                                <option value="Outro" ${fornecedor.formaPagamento === 'Outro' ? 'selected' : ''}>Outro</option>
+                            </select>
+                        </div>
+                        <div class="campo-financeiro">
+                            <label>Número de Parcelas:</label>
+                            <input type="number" value="${fornecedor.numeroParcelas || 1}" min="1"
+                                onchange="atualizarFornecedor('${categoria}', ${index}, 'numeroParcelas', this.value); calcularParcelas('${categoria}', ${index})">
+                        </div>
+                        <div class="campo-financeiro">
+                            <label>Primeiro Vencimento:</label>
+                            <input type="date" value="${fornecedor.primeiroVencimento || ''}"
+                                onchange="atualizarFornecedor('${categoria}', ${index}, 'primeiroVencimento', this.value); calcularParcelas('${categoria}', ${index})">
+                        </div>
+                    </div>
+                    <div class="campo-financeiro" style="margin-top: 15px;">
+                        <label>Observações:</label>
+                        <textarea onchange="atualizarFornecedor('${categoria}', ${index}, 'obs', this.value)" 
+                            placeholder="Observações sobre o pagamento">${fornecedor.obs || ''}</textarea>
+                    </div>
+            `;
+
+            if (fornecedor.parcelas && fornecedor.parcelas.length > 0) {
+                html += `
+                    <div class="parcelas-lista">
+                        <h4 style="margin-top: 20px; margin-bottom: 10px;">📅 Parcelas (${formatarMoeda(fornecedor.valorParcela)} cada)</h4>
+                `;
+
+                fornecedor.parcelas.forEach((parcela) => {
+                    const dataBR = new Date(parcela.vencimento).toLocaleDateString('pt-BR');
+                    html += `
+                        <div class="parcela-item ${parcela.paga ? 'paga' : ''}">
+                            <input type="checkbox" ${parcela.paga ? 'checked' : ''} 
+                                onchange="toggleParcela('${categoria}', ${index}, ${parcela.numero - 1}, this.checked)">
+                            <span>Parcela ${parcela.numero}/${fornecedor.parcelas.length}</span>
+                            <span>${formatarMoeda(parcela.valor)}</span>
+                            <span>Venc: ${dataBR}</span>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+            }
+
+            html += '</div>';
+            
+            // Aplicar máscara no campo de moeda após renderizar
+            setTimeout(() => {
+                const camposMoeda = document.querySelectorAll('.campo-moeda');
+                camposMoeda.forEach(campo => aplicarMascaraMoeda(campo));
+            }, 0);
+            
+            return html;
+        }
+
+        function toggleCategoria(id) {
+            const conteudo = document.getElementById(id);
+            const isExpanded = conteudo.classList.contains('expanded');
+
+            // Toggle do conteúdo
+            conteudo.classList.toggle('expanded');
+
+            // Girar o indicador
+            const indicator = conteudo.previousElementSibling.querySelector('.expand-indicator');
+            if (indicator) {
+                indicator.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+            }
+        }
+
+        function adicionarFornecedor(categoria, idConteudo) {
+            dados.casamento[categoria].push({
+                nome: '',
+                contato: '',
+                status: 'Cotando',
+                valorTotal: '',
+                formaPagamento: 'À vista',
+                numeroParcelas: 1,
+                primeiroVencimento: '',
+                obs: '',
+                parcelas: []
+            });
+            
+            salvarDados();
+            renderizarCasamento();
+            
+            // Manter expandido e focar no novo campo
+            setTimeout(() => {
+                const conteudo = document.getElementById(idConteudo);
+                conteudo.classList.add('expanded');
+                
+                const tbody = document.getElementById('tbody-' + categoria.replace(/\s/g, '-'));
+                const ultimaLinha = tbody.querySelector('tr:last-child');
+                if (ultimaLinha) {
+                    const primeiroInput = ultimaLinha.querySelector('input');
+                    if (primeiroInput) {
+                        primeiroInput.focus();
+                    }
+                }
+            }, 100);
+        }
+
+        function removerFornecedor(categoria, index) {
+            if (confirm('Deseja realmente remover este fornecedor?')) {
+                dados.casamento[categoria].splice(index, 1);
+                salvarDados();
+                renderizarCasamento();
+            }
+        }
+
+        function atualizarFornecedor(categoria, index, campo, valor) {
+            console.log(`🔄 Atualizando fornecedor: ${categoria}[${index}].${campo} = ${valor}`);
+            dados.casamento[categoria][index][campo] = valor;
+            salvarDados();
+        }
+
+        function atualizarCampoMoeda(categoria, index, valorFormatado) {
+            const valorNumerico = valorFormatado.replace(/[^\d]/g, '');
+            const valor = (parseFloat(valorNumerico) / 100).toFixed(2);
+            dados.casamento[categoria][index].valorTotal = valor;
+            salvarDados();
+            calcularParcelas(categoria, index);
+        }
+
+        function calcularParcelas(categoria, index) {
+            const fornecedor = dados.casamento[categoria][index];
+            const valorTotal = parseFloat(fornecedor.valorTotal || 0);
+            const numParcelas = parseInt(fornecedor.numeroParcelas) || 1;
+            const primeiroVencimento = fornecedor.primeiroVencimento;
+            
+            if (valorTotal > 0 && numParcelas > 0 && primeiroVencimento) {
+                const valorParcela = valorTotal / numParcelas;
+                fornecedor.valorParcela = valorParcela.toFixed(2);
+                
+                fornecedor.parcelas = [];
+                const dataInicial = new Date(primeiroVencimento);
+                
+                for (let i = 0; i < numParcelas; i++) {
+                    const dataParcela = new Date(dataInicial);
+                    dataParcela.setMonth(dataParcela.getMonth() + i);
+                    
+                    fornecedor.parcelas.push({
+                        numero: i + 1,
+                        valor: valorParcela,
+                        vencimento: dataParcela.toISOString().split('T')[0],
+                        paga: fornecedor.parcelas[i]?.paga || false
+                    });
+                }
+                
+                salvarDados();
+                renderizarCasamento();
+            }
+        }
+
+        function toggleParcela(categoria, index, parcelaIndex, paga) {
+            dados.casamento[categoria][index].parcelas[parcelaIndex].paga = paga;
+            salvarDados();
+            atualizarDashboard();
+            atualizarResumo();
+        }
+
+        // ============================================
+        // CASA NOVA
+        // ============================================
+
+        function renderizarCasa() {
+            const container = document.getElementById('comodos-casa');
+            container.innerHTML = '';
+
+            // Ordenar cômodos alfabeticamente
+            const comodosOrdenados = Object.entries(dados.casa)
+                .sort(([a], [b]) => a.localeCompare(b));
+
+            for (const [comodo, itens] of comodosOrdenados) {
+                const card = criarCardCasa(comodo, itens);
+                container.appendChild(card);
+            }
+        }
+
+        function criarCardCasa(comodo, itens) {
+            const card = document.createElement('div');
+            card.className = 'categoria-card';
+            const idConteudo = `conteudo-casa-${comodo.replace(/\s/g, '-')}`;
+
+            const total = itens.length;
+            const prontos = itens.filter(i => i.situacao === 'Já temos' || i.situacao === 'Vamos ganhar').length;
+            const percentual = total > 0 ? Math.round((prontos / total) * 100) : 0;
+
+            card.innerHTML = `
+                <div class="categoria-header" onclick="toggleCategoria('${idConteudo}')">
+                    <div class="categoria-titulo">
+                        <span class="categoria-icone">🏠</span>${comodo}
+                        <span class="expand-indicator" style="margin-left: 10px; transition: transform 0.25s ease;">▼</span>
+                    </div>
+                    <div class="categoria-acoes">
+                        <button class="btn btn-small" onclick="event.stopPropagation(); adicionarItemCasa('${comodo}', '${idConteudo}')">+ Item</button>
+                        <button class="btn btn-small btn-danger" onclick="event.stopPropagation(); excluirComodo('${comodo}')">🗑️ Excluir</button>
+                    </div>
+                </div>
+                <div id="${idConteudo}" class="categoria-conteudo">
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-weight: 500;">Progresso</span>
+                            <span style="font-weight: 600; color: var(--cor-dourado);">${prontos}/${total} (${percentual}%)</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percentual}%"></div>
+                        </div>
+                    </div>
+                    <div class="tabela-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Situação</th>
+                                    <th>Observações</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-casa-${comodo.replace(/\s/g, '-')}">
+                                ${itens.map((item, index) => `
+                                    <tr data-index="${index}">
+                                        <td><input type="text" value="${item.nome || ''}" 
+                                            onchange="atualizarItemCasa('${comodo}', ${index}, 'nome', this.value)" 
+                                            placeholder="Nome do item"></td>
+                                        <td>
+                                            <select onchange="atualizarItemCasa('${comodo}', ${index}, 'situacao', this.value); renderizarCasa(); atualizarDashboard();">
+                                                <option value="Precisamos comprar" ${item.situacao === 'Precisamos comprar' ? 'selected' : ''}>🛒 Precisamos comprar</option>
+                                                <option value="Já temos" ${item.situacao === 'Já temos' ? 'selected' : ''}>✓ Já temos</option>
+                                                <option value="Vamos ganhar" ${item.situacao === 'Vamos ganhar' ? 'selected' : ''}>🎁 Vamos ganhar</option>
+                                            </select>
+                                        </td>
+                                        <td><textarea onchange="atualizarItemCasa('${comodo}', ${index}, 'obs', this.value)" 
+                                            placeholder="Modelo, loja, link...">${item.obs || ''}</textarea></td>
+                                        <td><button class="btn-small btn-danger" onclick="removerItemCasa('${comodo}', ${index})">✕</button></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-add-inline" onclick="adicionarItemCasa('${comodo}', '${idConteudo}')">+ Novo Item</button>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function adicionarItemCasa(comodo, idConteudo) {
+            dados.casa[comodo].push({
+                nome: '',
+                situacao: 'Precisamos comprar',
+                obs: ''
+            });
+            
+            salvarDados();
+            renderizarCasa();
+            
+            // Manter expandido e focar
+            setTimeout(() => {
+                const conteudo = document.getElementById(idConteudo);
+                conteudo.classList.add('expanded');
+                
+                const tbody = document.getElementById('tbody-casa-' + comodo.replace(/\s/g, '-'));
+                const ultimaLinha = tbody.querySelector('tr:last-child');
+                if (ultimaLinha) {
+                    const primeiroInput = ultimaLinha.querySelector('input');
+                    if (primeiroInput) {
+                        primeiroInput.focus();
+                    }
+                }
+            }, 100);
+        }
+
+        function removerItemCasa(comodo, index) {
+            if (confirm('Deseja realmente remover este item?')) {
+                dados.casa[comodo].splice(index, 1);
+                salvarDados();
+                renderizarCasa();
+                atualizarDashboard();
+            }
+        }
+
+        function atualizarItemCasa(comodo, index, campo, valor) {
+            dados.casa[comodo][index][campo] = valor;
+            salvarDados();
+        }
+
+        // ============================================
+        // DASHBOARD
+        // ============================================
+
+        function atualizarDashboard() {
+            // Dias restantes
+            if (dados.dataCasamento) {
+                const hoje = new Date();
+                hoje.setHours(0, 0, 0, 0);
+                const dataCasamento = new Date(dados.dataCasamento);
+                dataCasamento.setHours(0, 0, 0, 0);
+                const diferenca = Math.ceil((dataCasamento - hoje) / (1000 * 60 * 60 * 24));
+                
+                if (diferenca === 0) {
+                    document.getElementById('diasRestantes').innerHTML = '🎉<br><span style="font-size: 0.5em;">Hoje!</span>';
+                } else if (diferenca < 0) {
+                    document.getElementById('diasRestantes').innerHTML = '💖<br><span style="font-size: 0.5em;">Realizado!</span>';
+                } else {
+                    document.getElementById('diasRestantes').textContent = diferenca;
+                }
+            } else {
+                document.getElementById('diasRestantes').textContent = '--';
+            }
+
+            // Progresso do casamento
+            let totalCategorias = Object.keys(dados.casamento).length;
+            let categoriasComEscolhido = 0;
+            
+            for (const [categoria, fornecedores] of Object.entries(dados.casamento)) {
+                if (fornecedores.some(f => f.status === 'Escolhido')) {
+                    categoriasComEscolhido++;
+                }
+            }
+            
+            const percentualCasamento = totalCategorias > 0 ? Math.round((categoriasComEscolhido / totalCategorias) * 100) : 0;
+            document.getElementById('progressoCasamento').textContent = percentualCasamento + '%';
+            document.getElementById('progressoBarraCasamento').style.width = percentualCasamento + '%';
+            document.getElementById('labelCasamento').textContent = `${categoriasComEscolhido} de ${totalCategorias} categorias com fornecedor escolhido`;
+
+            // Progresso da casa
+            let totalItens = 0;
+            let itensProntos = 0;
+            
+            for (const [comodo, itens] of Object.entries(dados.casa)) {
+                totalItens += itens.length;
+                itensProntos += itens.filter(i => i.situacao === 'Já temos' || i.situacao === 'Vamos ganhar').length;
+            }
+            
+            const percentualCasa = totalItens > 0 ? Math.round((itensProntos / totalItens) * 100) : 0;
+            document.getElementById('progressoCasa').textContent = percentualCasa + '%';
+            document.getElementById('progressoBarraCasa').style.width = percentualCasa + '%';
+            document.getElementById('labelCasa').textContent = `${itensProntos} de ${totalItens} itens já temos/ganharemos`;
+
+            // Parcelas pagas
+            let totalParcelas = 0;
+            let parcelasPagas = 0;
+            
+            for (const [categoria, fornecedores] of Object.entries(dados.casamento)) {
+                fornecedores.forEach(f => {
+                    if (f.status === 'Escolhido' && f.parcelas) {
+                        totalParcelas += f.parcelas.length;
+                        parcelasPagas += f.parcelas.filter(p => p.paga).length;
+                    }
+                });
+            }
+            
+            document.getElementById('statusPagamento').textContent = totalParcelas > 0 ? `${parcelasPagas}/${totalParcelas}` : '--';
+            document.getElementById('labelPagamento').textContent = totalParcelas > 0 ? `${parcelasPagas} pagas de ${totalParcelas} parcelas` : 'Aguardando parcelas';
+        }
+
+        // ============================================
+        // RESUMO
+        // ============================================
+
+        function atualizarResumo() {
+            // Resumo do casamento
+            let htmlCasamento = '';
+            let temDados = false;
+
+            for (const [categoria, fornecedores] of Object.entries(dados.casamento)) {
+                const escolhido = fornecedores.find(f => f.status === 'Escolhido');
+                if (escolhido) {
+                    temDados = true;
+                    const icone = iconesCategoria[categoria] || '💼';
+                    
+                    let parcelasInfo = '';
+                    let proximoVencimento = '';
+                    
+                    if (escolhido.parcelas && escolhido.parcelas.length > 0) {
+                        const pagas = escolhido.parcelas.filter(p => p.paga).length;
+                        const total = escolhido.parcelas.length;
+                        const percentualPago = Math.round((pagas / total) * 100);
+                        
+                        parcelasInfo = `
+                            <div style="margin-top: 10px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span style="font-size: 0.9em;">Parcelas pagas:</span>
+                                    <span style="font-weight: 600;">${pagas}/${total}</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${percentualPago}%"></div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        const proximaParcela = escolhido.parcelas.find(p => !p.paga);
+                        if (proximaParcela) {
+                            const dataVenc = new Date(proximaParcela.vencimento).toLocaleDateString('pt-BR');
+                            proximoVencimento = `
+                                <div style="background: #fff3cd; padding: 8px 12px; border-radius: 6px; font-size: 0.85em; color: #856404; margin-top: 10px;">
+                                    📅 Próximo vencimento: ${dataVenc} - ${formatarMoeda(proximaParcela.valor)}
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    htmlCasamento += `
+                        <div class="resumo-item">
+                            <div class="resumo-categoria">${icone} ${categoria}</div>
+                            <div class="resumo-fornecedor">${escolhido.nome || 'Fornecedor não informado'}</div>
+                            <div class="resumo-valor">${escolhido.valorTotal ? formatarMoeda(parseFloat(escolhido.valorTotal) * 100) : 'Valor não informado'}</div>
+                            <div style="font-size: 0.9em; color: var(--cor-cinza-claro); margin-top: 8px;">
+                                💳 ${escolhido.formaPagamento || 'Não informado'}
+                            </div>
+                            ${parcelasInfo}
+                            ${proximoVencimento}
+                        </div>
+                    `;
+                }
+            }
+
+            document.getElementById('resumo-casamento').innerHTML = temDados ? htmlCasamento : '<p style="color: var(--cor-cinza-claro); text-align: center; padding: 20px;">Nenhum fornecedor escolhido ainda. Marque fornecedores como "Escolhido" na aba Casamento!</p>';
+
+            // Resumo da casa
+            let htmlCasa = '';
+            let temDadosCasa = false;
+
+            for (const [comodo, itens] of Object.entries(dados.casa)) {
+                if (itens.length > 0) {
+                    temDadosCasa = true;
+                    const total = itens.length;
+                    const temos = itens.filter(i => i.situacao === 'Já temos').length;
+                    const vamosGanhar = itens.filter(i => i.situacao === 'Vamos ganhar').length;
+                    const precisamos = itens.filter(i => i.situacao === 'Precisamos comprar').length;
+                    const progresso = total > 0 ? Math.round(((temos + vamosGanhar) / total) * 100) : 0;
+
+                    htmlCasa += `
+                        <div style="padding: 15px; margin-bottom: 15px; background: var(--cor-branco-gelo); border-radius: 10px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <div style="font-weight: 600; color: var(--cor-cinza);">🏠 ${comodo}</div>
+                                <span style="font-weight: 600; color: var(--cor-dourado);">${temos + vamosGanhar}/${total}</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progresso}%"></div>
+                            </div>
+                            <div style="display: flex; gap: 15px; font-size: 0.85em; color: var(--cor-cinza-claro); margin-top: 10px; flex-wrap: wrap;">
+                                <span>✓ ${temos} temos</span>
+                                <span>🎁 ${vamosGanhar} ganharemos</span>
+                                <span>🛒 ${precisamos} faltam</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            document.getElementById('resumo-casa').innerHTML = temDadosCasa ? htmlCasa : '<p style="color: var(--cor-cinza-claro); text-align: center; padding: 20px;">Nenhum item cadastrado ainda. Comece adicionando itens na aba Casa Nova!</p>';
+        }
+
+        // ============================================
+        // GERENCIAR CATEGORIAS E CÔMODOS
+        // ============================================
+
+        function abrirModalNovaCategoria() {
+            document.getElementById('modal-nova-categoria').classList.add('show');
+            document.getElementById('input-nova-categoria').value = '';
+            document.getElementById('input-icone-categoria').value = '';
+            document.getElementById('input-nova-categoria').focus();
+        }
+
+        function abrirModalNovoComodo() {
+            document.getElementById('modal-novo-comodo').classList.add('show');
+            document.getElementById('input-novo-comodo').value = '';
+            document.getElementById('input-novo-comodo').focus();
+        }
+
+        function fecharModais() {
+            document.getElementById('modal-nova-categoria').classList.remove('show');
+            document.getElementById('modal-novo-comodo').classList.remove('show');
+        }
+
+        function adicionarNovaCategoria() {
+            const nome = document.getElementById('input-nova-categoria').value.trim();
+            const icone = document.getElementById('input-icone-categoria').value.trim();
+            
+            if (!nome) {
+                alert('⚠️ Por favor, insira um nome para a categoria.');
+                return;
+            }
+            
+            if (dados.casamento[nome]) {
+                alert('⚠️ Esta categoria já existe!');
+                return;
+            }
+            
+            // Adicionar categoria
+            dados.casamento[nome] = [];
+            
+            // Adicionar ícone se fornecido
+            if (icone) {
+                iconesCategoria[nome] = icone;
+            }
+            
+            salvarDados();
+            renderizarCasamento();
+            fecharModais();
+            mostrarNotificacao(`✅ Categoria "${nome}" adicionada com sucesso!`);
+        }
+
+        function adicionarNovoComodo() {
+            const nome = document.getElementById('input-novo-comodo').value.trim();
+            
+            if (!nome) {
+                alert('⚠️ Por favor, insira um nome para o cômodo.');
+                return;
+            }
+            
+            if (dados.casa[nome]) {
+                alert('⚠️ Este cômodo já existe!');
+                return;
+            }
+            
+            // Adicionar cômodo
+            dados.casa[nome] = [];
+            
+            salvarDados();
+            renderizarCasa();
+            fecharModais();
+            mostrarNotificacao(`✅ Cômodo "${nome}" adicionado com sucesso!`);
+        }
+
+        async function excluirCategoria(categoria) {
+            const fornecedores = dados.casamento[categoria].length;
+            const mensagem = fornecedores > 0
+                ? `⚠️ A categoria "${categoria}" possui ${fornecedores} fornecedor(es).\n\nDeseja realmente excluir esta categoria e TODOS os seus dados?\n\nEsta ação não pode ser desfeita.`
+                : `Deseja realmente excluir a categoria "${categoria}"?`;
+
+            if (confirm(mensagem)) {
+                try {
+                    // Remover do objeto local
+                    delete dados.casamento[categoria];
+
+                    // Excluir do Supabase
+                    if (supabaseAtivo) {
+                        await supabase
+                            .from('categorias_casamento')
+                            .delete()
+                            .eq('nome', categoria);
+                    }
+
+                    renderizarCasamento();
+                    atualizarDashboard();
+                    mostrarNotificacao(`🗑️ Categoria "${categoria}" excluída`);
+
+                } catch (error) {
+                    console.error('❌ Erro ao excluir categoria:', error);
+                    mostrarNotificacao('❌ Erro ao excluir categoria');
+                }
+            }
+        }
+
+        async function excluirComodo(comodo) {
+            const itens = dados.casa[comodo].length;
+            const mensagem = itens > 0
+                ? `⚠️ O cômodo "${comodo}" possui ${itens} item(ns).\n\nDeseja realmente excluir este cômodo e TODOS os seus dados?\n\nEsta ação não pode ser desfeita.`
+                : `Deseja realmente excluir o cômodo "${comodo}"?`;
+
+            if (confirm(mensagem)) {
+                try {
+                    // Remover do objeto local
+                    delete dados.casa[comodo];
+
+                    // Excluir do Supabase
+                    if (supabaseAtivo) {
+                        await supabase
+                            .from('comodos_casa')
+                            .delete()
+                            .eq('nome', comodo);
+                    }
+
+                    renderizarCasa();
+                    atualizarDashboard();
+                    mostrarNotificacao(`🗑️ Cômodo "${comodo}" excluído`);
+
+                } catch (error) {
+                    console.error('❌ Erro ao excluir cômodo:', error);
+                    mostrarNotificacao('❌ Erro ao excluir cômodo');
+                }
+            }
+        }
+
+        // ============================================
+        // MIGRAÇÃO E REAL-TIME
+        // ============================================
+
+        // Migrar dados do localStorage para Supabase
+        async function migrarParaSupabase() {
+            if (!supabaseAtivo) {
+                mostrarNotificacao('❌ Supabase não está conectado');
+                return;
+            }
+
+            try {
+                const dadosLocais = localStorage.getItem('painelDL');
+                if (!dadosLocais) {
+                    mostrarNotificacao('ℹ️ Nenhum dado local encontrado para migrar');
+                    return;
+                }
+
+                const dadosAntigos = JSON.parse(dadosLocais);
+                const dadosBackup = {...dados}; // Backup dos dados atuais
+
+                // Sobrescrever com dados locais
+                dados = dadosAntigos;
+
+                // Salvar no Supabase
+                await salvarDadosSupabase();
+
+                mostrarNotificacao('✅ Dados migrados para o Supabase com sucesso!');
+                console.log('📤 Migração concluída');
+
+                // Recarregar para verificar
+                await carregarDadosSupabase();
+
+            } catch (error) {
+                console.error('❌ Erro na migração:', error);
+                mostrarNotificacao('❌ Erro na migração - dados preservados');
+            }
+        }
+
+        // Configurar real-time updates
+        function configurarRealTime() {
+            if (!supabaseAtivo) return;
+
+            try {
+                // Escutar mudanças nas categorias de casamento
+                supabase
+                    .channel('casamento-changes')
+                    .on('postgres_changes', {
+                        event: '*',
+                        schema: 'public',
+                        table: 'categorias_casamento'
+                    }, async (payload) => {
+                        console.log('🔄 Mudança detectada em categorias:', payload);
+                        await carregarDadosSupabase();
+                    })
+                    .subscribe();
+
+                // Escutar mudanças nos cômodos da casa
+                supabase
+                    .channel('casa-changes')
+                    .on('postgres_changes', {
+                        event: '*',
+                        schema: 'public',
+                        table: 'comodos_casa'
+                    }, async (payload) => {
+                        console.log('🔄 Mudança detectada em cômodos:', payload);
+                        await carregarDadosSupabase();
+                    })
+                    .subscribe();
+
+                // Escutar mudanças nas configurações
+                supabase
+                    .channel('config-changes')
+                    .on('postgres_changes', {
+                        event: '*',
+                        schema: 'public',
+                        table: 'configuracoes'
+                    }, async (payload) => {
+                        console.log('🔄 Mudança detectada em configurações:', payload);
+                        await carregarDadosSupabase();
+                    })
+                    .subscribe();
+
+                console.log('🔄 Real-time configurado');
+            } catch (error) {
+                console.error('❌ Erro ao configurar real-time:', error);
+            }
+        }
+
+        // ============================================
+        // FUNÇÕES UTILITÁRIAS
+        // ============================================
+
+        function exportarBackup() {
+            try {
+                const dataStr = JSON.stringify(dados, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                const dataAtual = new Date().toISOString().split('T')[0];
+                link.href = url;
+                link.download = `painelDL-backup-${dataAtual}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+                mostrarNotificacao('✅ Backup criado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao exportar:', error);
+                mostrarNotificacao('❌ Erro ao criar backup');
+            }
+        }
+
+        function importarBackup(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const dadosImportados = JSON.parse(e.target.result);
+                        if (confirm('⚠️ Deseja realmente substituir todos os dados atuais pelo backup?\n\nEsta ação não pode ser desfeita.')) {
+                            dados = dadosImportados;
+                            salvarDados();
+                            renderizarTudo();
+                            mostrarNotificacao('✅ Backup restaurado com sucesso!');
+                        }
+                    } catch (error) {
+                        alert('❌ Erro ao ler o arquivo. Certifique-se de que é um backup válido.');
+                        console.error('Erro ao importar:', error);
+                    }
+                };
+                reader.readAsText(file);
+            }
+            // Limpar o input para permitir reimportar o mesmo arquivo
+            event.target.value = '';
+        }
+
+        function atualizarTudo() {
+            renderizarTudo();
+            mostrarNotificacao('🔄 Dashboard atualizado!');
+        }
+
+        function limparTudo() {
+            if (confirm('⚠️ ATENÇÃO: Deseja realmente apagar TODOS os dados?\n\nEsta ação é IRREVERSÍVEL e todos os fornecedores, itens e configurações serão perdidos.\n\nRecomendamos fazer um backup antes de continuar.\n\nDeseja prosseguir?')) {
+                if (confirm('🚨 ÚLTIMA CONFIRMAÇÃO:\n\nVocê tem certeza absoluta?\n\nTODOS os dados serão apagados permanentemente!')) {
+                    localStorage.clear();
+                    dados = {
+                        casamento: {
+                            'Buffet': [],
+                            'Decoração': [],
+                            'Fotografia & Vídeo': [],
+                            'Música': [],
+                            'Trajes': [],
+                            'Convites': [],
+                            'Lembrancinhas': [],
+                            'Dia da Noiva': [],
+                            'Lua de Mel': []
+                        },
+                        casa: {
+                            'Cozinha': [],
+                            'Quarto': [],
+                            'Sala': [],
+                            'Banheiro': [],
+                            'Lavanderia': [],
+                            'Varanda': []
+                        },
+                        dataCasamento: ''
+                    };
+                    renderizarTudo();
+                    mostrarNotificacao('🧹 Todos os dados foram apagados');
+                }
+            }
+        }
+
+        function mostrarNotificacao(mensagem) {
+            const notification = document.getElementById('saveNotification');
+            const textoElement = notification.querySelector('span:last-child');
+            textoElement.textContent = mensagem;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    notification.style.animation = '';
+                    textoElement.textContent = 'Alterações salvas automaticamente';
+                }, 300);
+            }, 3000);
+        }
+
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            const modalCategoria = document.getElementById('modal-nova-categoria');
+            const modalComodo = document.getElementById('modal-novo-comodo');
+            if (event.target === modalCategoria || event.target === modalComodo) {
+                fecharModais();
+            }
+        }
+
+        // Enter para confirmar nos modais
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('input-nova-categoria').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') adicionarNovaCategoria();
+            });
+
+            document.getElementById('input-novo-comodo').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') adicionarNovoComodo();
+            });
+        });
+
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
+
+        window.addEventListener('load', async function() {
+            console.log('🚀 Iniciando Painel D&L...');
+
+            try {
+                // Tentar inicializar Supabase primeiro
+                await inicializarSupabase();
+            } catch (error) {
+                console.error('❌ Falha na inicialização do Supabase:', error);
+                // Continuar com localStorage se Supabase falhar
+                carregarDados();
+            }
+
+            console.log('✅ Painel D&L carregado com sucesso!');
+        });
+
+        // Fechar sidebar ao clicar no overlay
+        document.getElementById('mobileOverlay').addEventListener('click', toggleSidebar);
+    </script>
+</body>
+</html>
