@@ -1132,6 +1132,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                     dados.casamento = {};
                     categorias.forEach(cat => {
                         dados.casamento[cat.nome] = cat.fornecedores || [];
+                        dados.casamento[cat.nome].valor = cat.valor || 0;
                         if (cat.icone) {
                             iconesCategoria[cat.nome] = cat.icone;
                         }
@@ -1152,6 +1153,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                     dados.casa = {};
                     comodos.forEach(comodo => {
                         dados.casa[comodo.nome] = comodo.itens || [];
+                        dados.casa[comodo.nome].valor = comodo.valor || 0;
                     });
                 } else if (!window.dadosInicializados) {
                     // Inicializar com cômodos padrão apenas na primeira vez
@@ -1312,11 +1314,13 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
 
                     if (existe) {
                         // UPDATE categoria existente
+                        const valorCategoria = dados.casamento[nomeCategoria].valor || 0;
                         const { error: updateError } = await supabase
                             .from('categorias_casamento')
                             .update({
                                 icone: icone,
-                                fornecedores: fornecedores
+                                fornecedores: fornecedores,
+                                valor: valorCategoria
                             })
                             .eq('nome', nomeCategoria);
 
@@ -1327,12 +1331,14 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                         }
                     } else {
                         // INSERT nova categoria
+                        const valorCategoria = dados.casamento[nomeCategoria].valor || 0;
                         const { error: insertError } = await supabase
                             .from('categorias_casamento')
                             .insert({
                                 nome: nomeCategoria,
                                 icone: icone,
-                                fornecedores: fornecedores
+                                fornecedores: fornecedores,
+                                valor: valorCategoria
                             });
 
                         if (insertError) {
@@ -1354,9 +1360,13 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
 
                     if (existe) {
                         // UPDATE cômodo existente
+                        const valorComodo = dados.casa[nomeComodo].valor || 0;
                         const { error: updateError } = await supabase
                             .from('comodos_casa')
-                            .update({ itens: itens })
+                            .update({
+                                itens: itens,
+                                valor: valorComodo
+                            })
                             .eq('nome', nomeComodo);
 
                         if (updateError) {
@@ -1364,11 +1374,13 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                         }
                     } else {
                         // INSERT novo cômodo
+                        const valorComodo = dados.casa[nomeComodo].valor || 0;
                         const { error: insertError } = await supabase
                             .from('comodos_casa')
                             .insert({
                                 nome: nomeComodo,
-                                itens: itens
+                                itens: itens,
+                                valor: valorComodo
                             });
 
                         if (insertError) {
@@ -1535,11 +1547,21 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             const idConteudo = `conteudo-casamento-${categoria.replace(/\s/g, '-')}`;
             const icone = iconesCategoria[categoria] || '💼';
 
+            const valorCategoria = dados.casamento[categoria].valor || 0;
+            const valorFormatado = valorCategoria > 0 ? formatarMoeda(valorCategoria * 100) : 'R$ 0,00';
+
             card.innerHTML = `
                 <div class="categoria-header" onclick="toggleCategoria('${idConteudo}')">
                     <div class="categoria-titulo">
                         <span class="categoria-icone">${icone}</span>${categoria}
                         <span class="expand-indicator" style="margin-left: 10px; transition: transform 0.25s ease;">▼</span>
+                        <div style="margin-left: 15px; font-size: 0.9em; color: var(--cor-dourado); font-weight: 600;">
+                            <input type="text" class="campo-valor-categoria" value="${valorFormatado}"
+                                onclick="event.stopPropagation();"
+                                onblur="atualizarValorCategoria('${categoria}', this.value)"
+                                style="width: 120px; padding: 5px 10px; border: 2px solid var(--cor-dourado); border-radius: 6px; text-align: right; font-weight: 600;"
+                                placeholder="R$ 0,00">
+                        </div>
                     </div>
                     <div class="categoria-acoes">
                         <button class="btn btn-small" onclick="event.stopPropagation(); adicionarFornecedor('${categoria}', '${idConteudo}')">+ Fornecedor</button>
@@ -1551,7 +1573,23 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                 </div>
             `;
 
+            // Aplicar máscara de moeda no campo valor
+            setTimeout(() => {
+                const campoValor = card.querySelector('.campo-valor-categoria');
+                if (campoValor) {
+                    aplicarMascaraMoeda(campoValor);
+                }
+            }, 0);
+
             return card;
+        }
+
+        function atualizarValorCategoria(categoria, valorFormatado) {
+            const valorNumerico = valorFormatado.replace(/[^\d]/g, '');
+            const valor = (parseFloat(valorNumerico) / 100).toFixed(2);
+            dados.casamento[categoria].valor = parseFloat(valor);
+            salvarDados();
+            console.log(`💰 Valor da categoria ${categoria} atualizado para: ${formatarMoeda(parseFloat(valor) * 100)}`);
         }
 
         function criarConteudoCasamento(categoria, fornecedores, idConteudo) {
@@ -1805,11 +1843,21 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             const prontos = itens.filter(i => i.situacao === 'Já temos' || i.situacao === 'Vamos ganhar').length;
             const percentual = total > 0 ? Math.round((prontos / total) * 100) : 0;
 
+            const valorComodo = dados.casa[comodo].valor || 0;
+            const valorFormatadoCasa = valorComodo > 0 ? formatarMoeda(valorComodo * 100) : 'R$ 0,00';
+
             card.innerHTML = `
                 <div class="categoria-header" onclick="toggleCategoria('${idConteudo}')">
                     <div class="categoria-titulo">
                         <span class="categoria-icone">🏠</span>${comodo}
                         <span class="expand-indicator" style="margin-left: 10px; transition: transform 0.25s ease;">▼</span>
+                        <div style="margin-left: 15px; font-size: 0.9em; color: var(--cor-dourado); font-weight: 600;">
+                            <input type="text" class="campo-valor-comodo" value="${valorFormatadoCasa}"
+                                onclick="event.stopPropagation();"
+                                onblur="atualizarValorComodo('${comodo}', this.value)"
+                                style="width: 120px; padding: 5px 10px; border: 2px solid var(--cor-dourado); border-radius: 6px; text-align: right; font-weight: 600;"
+                                placeholder="R$ 0,00">
+                        </div>
                     </div>
                     <div class="categoria-acoes">
                         <button class="btn btn-small" onclick="event.stopPropagation(); adicionarItemCasa('${comodo}', '${idConteudo}')">+ Item</button>
@@ -1861,7 +1909,23 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                 </div>
             `;
 
+            // Aplicar máscara de moeda no campo valor
+            setTimeout(() => {
+                const campoValor = card.querySelector('.campo-valor-comodo');
+                if (campoValor) {
+                    aplicarMascaraMoeda(campoValor);
+                }
+            }, 0);
+
             return card;
+        }
+
+        function atualizarValorComodo(comodo, valorFormatado) {
+            const valorNumerico = valorFormatado.replace(/[^\d]/g, '');
+            const valor = (parseFloat(valorNumerico) / 100).toFixed(2);
+            dados.casa[comodo].valor = parseFloat(valor);
+            salvarDados();
+            console.log(`💰 Valor do cômodo ${comodo} atualizado para: ${formatarMoeda(parseFloat(valor) * 100)}`);
         }
 
         function adicionarItemCasa(comodo, idConteudo) {
