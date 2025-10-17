@@ -1731,7 +1731,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
 
         function criarConteudoCasamento(categoria, fornecedores, idConteudo) {
             let html = '<div class="tabela-wrapper"><table><thead><tr>';
-            html += '<th>Fornecedor</th><th>Contato</th><th>Valor</th><th>Status</th><th>Ações</th>';
+            html += '<th>Fornecedor</th><th>Contato</th><th>Valor</th><th>Observações</th><th>Status</th><th>Ações</th>';
             html += '</tr></thead><tbody id="tbody-' + categoria.replace(/\s/g, '-') + '">';
 
             fornecedores.forEach((fornecedor, index) => {
@@ -1762,6 +1762,12 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                             onblur="atualizarValorFornecedor('${categoria}', ${index}, this.value)"
                             style="width: 120px; padding: 5px; border: 2px solid var(--cor-dourado); border-radius: 4px; text-align: right;"
                             placeholder="R$ 0,00">
+                    </td>
+                    <td>
+                        <textarea
+                            onchange="atualizarFornecedor('${categoria}', ${index}, 'observacao', this.value)"
+                            placeholder="Observações gerais..."
+                            style="min-width: 150px; min-height: 40px; padding: 5px;">${fornecedor.observacao || ''}</textarea>
                     </td>
                     <td>
                         <select onchange="atualizarFornecedor('${categoria}', ${index}, 'status', this.value); renderizarCasamento();">
