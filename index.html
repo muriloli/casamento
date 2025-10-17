@@ -461,6 +461,28 @@
         /* Tabelas */
         .tabela-wrapper {
             overflow-x: auto;
+            position: relative;
+        }
+
+        /* Dica de scroll horizontal */
+        .tabela-wrapper.scroll-hint::before {
+            content: '← Deslize para ver mais →';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(194, 154, 89, 0.9);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            z-index: 10;
+            pointer-events: none;
+            animation: fadeInOut 3s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            20%, 80% { opacity: 1; }
         }
 
         table {
@@ -800,14 +822,140 @@
 
             .categoria-acoes {
                 width: 100%;
+                flex-direction: column;
+            }
+
+            .categoria-acoes .btn-small {
+                width: 100%;
+                margin: 3px 0;
+            }
+
+            .categoria-titulo {
+                font-size: 1.2em;
+                flex-wrap: wrap;
+            }
+
+            /* Tabelas responsivas */
+            .tabela-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
             }
 
             table {
-                font-size: 0.85em;
+                font-size: 0.8em;
+                min-width: 100%;
             }
 
             th, td {
-                padding: 8px 6px;
+                padding: 8px 4px;
+                font-size: 0.85em;
+            }
+
+            /* Inputs dentro das tabelas */
+            td input[type="text"],
+            td textarea,
+            td select {
+                font-size: 0.9em;
+                padding: 6px 4px;
+                min-width: 80px;
+            }
+
+            td textarea {
+                min-height: 40px;
+            }
+
+            /* Campo de valor mobile */
+            .campo-valor-fornecedor,
+            .campo-valor-item-casa {
+                width: 90px !important;
+                font-size: 0.85em;
+            }
+
+            /* Botões de ação nas tabelas */
+            .btn-small {
+                padding: 6px 8px;
+                font-size: 0.85em;
+            }
+
+            /* Conteúdo expandido */
+            .categoria-conteudo.expanded {
+                padding: 15px;
+            }
+
+            /* Modais mobile */
+            .modal-conteudo {
+                width: 95%;
+                max-width: 95%;
+                margin: 10px;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            /* Detalhes financeiros mobile */
+            .detalhes-financeiros {
+                padding: 10px;
+            }
+
+            .detalhes-financeiros .form-group {
+                margin-bottom: 12px;
+            }
+        }
+
+        /* Smartphones pequenos */
+        @media (max-width: 480px) {
+            .categoria-header {
+                padding: 15px;
+            }
+
+            .categoria-titulo {
+                font-size: 1.1em;
+            }
+
+            .categoria-icone {
+                font-size: 1.1em;
+            }
+
+            /* Tabelas ainda mais compactas */
+            table {
+                font-size: 0.75em;
+            }
+
+            th, td {
+                padding: 6px 3px;
+            }
+
+            /* Scroll horizontal mais evidente */
+            .tabela-wrapper {
+                border-left: 3px solid var(--cor-dourado);
+                border-right: 3px solid var(--cor-dourado);
+            }
+
+            /* Inputs compactos */
+            td input[type="text"] {
+                min-width: 70px;
+                padding: 5px 3px;
+            }
+
+            .campo-valor-fornecedor,
+            .campo-valor-item-casa {
+                width: 80px !important;
+            }
+
+            /* Botões menores */
+            .btn-small {
+                padding: 5px 6px;
+                font-size: 0.8em;
+            }
+
+            .btn-add-inline {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+
+            /* Header de categoria ajustado */
+            .categoria-acoes .btn-small {
+                font-size: 0.85em;
+                padding: 8px;
             }
         }
     </style>
@@ -1537,6 +1685,22 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                 document.querySelectorAll('.campo-valor-fornecedor').forEach(campo => {
                     aplicarMascaraMoeda(campo);
                 });
+
+                // Adicionar dica de scroll em tabelas largas (mobile)
+                if (window.innerWidth <= 768) {
+                    document.querySelectorAll('.tabela-wrapper').forEach(wrapper => {
+                        if (wrapper.scrollWidth > wrapper.clientWidth) {
+                            wrapper.classList.add('scroll-hint');
+                            // Remover dica após scroll ou após 3 segundos
+                            const removeHint = () => {
+                                wrapper.classList.remove('scroll-hint');
+                                wrapper.removeEventListener('scroll', removeHint);
+                            };
+                            wrapper.addEventListener('scroll', removeHint);
+                            setTimeout(removeHint, 3000);
+                        }
+                    });
+                }
             }, 0);
         }
 
