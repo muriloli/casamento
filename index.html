@@ -1539,6 +1539,13 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                 const card = criarCardCasamento(categoria, fornecedores);
                 container.appendChild(card);
             }
+
+            // Aplicar máscara de moeda em todos os campos de valor após renderizar
+            setTimeout(() => {
+                document.querySelectorAll('.campo-valor-fornecedor').forEach(campo => {
+                    aplicarMascaraMoeda(campo);
+                });
+            }, 0);
         }
 
         function criarCardCasamento(categoria, fornecedores) {
@@ -1547,21 +1554,11 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             const idConteudo = `conteudo-casamento-${categoria.replace(/\s/g, '-')}`;
             const icone = iconesCategoria[categoria] || '💼';
 
-            const valorCategoria = dados.casamento[categoria].valor || 0;
-            const valorFormatado = valorCategoria > 0 ? formatarMoeda(valorCategoria * 100) : 'R$ 0,00';
-
             card.innerHTML = `
                 <div class="categoria-header" onclick="toggleCategoria('${idConteudo}')">
                     <div class="categoria-titulo">
                         <span class="categoria-icone">${icone}</span>${categoria}
                         <span class="expand-indicator" style="margin-left: 10px; transition: transform 0.25s ease;">▼</span>
-                        <div style="margin-left: 15px; font-size: 0.9em; color: var(--cor-dourado); font-weight: 600;">
-                            <input type="text" class="campo-valor-categoria" value="${valorFormatado}"
-                                onclick="event.stopPropagation();"
-                                onblur="atualizarValorCategoria('${categoria}', this.value)"
-                                style="width: 120px; padding: 5px 10px; border: 2px solid var(--cor-dourado); border-radius: 6px; text-align: right; font-weight: 600;"
-                                placeholder="R$ 0,00">
-                        </div>
                     </div>
                     <div class="categoria-acoes">
                         <button class="btn btn-small" onclick="event.stopPropagation(); adicionarFornecedor('${categoria}', '${idConteudo}')">+ Fornecedor</button>
@@ -1573,28 +1570,12 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                 </div>
             `;
 
-            // Aplicar máscara de moeda no campo valor
-            setTimeout(() => {
-                const campoValor = card.querySelector('.campo-valor-categoria');
-                if (campoValor) {
-                    aplicarMascaraMoeda(campoValor);
-                }
-            }, 0);
-
             return card;
-        }
-
-        function atualizarValorCategoria(categoria, valorFormatado) {
-            const valorNumerico = valorFormatado.replace(/[^\d]/g, '');
-            const valor = (parseFloat(valorNumerico) / 100).toFixed(2);
-            dados.casamento[categoria].valor = parseFloat(valor);
-            salvarDados();
-            console.log(`💰 Valor da categoria ${categoria} atualizado para: ${formatarMoeda(parseFloat(valor) * 100)}`);
         }
 
         function criarConteudoCasamento(categoria, fornecedores, idConteudo) {
             let html = '<div class="tabela-wrapper"><table><thead><tr>';
-            html += '<th>Fornecedor</th><th>Contato</th><th>Status</th><th>Ações</th>';
+            html += '<th>Fornecedor</th><th>Contato</th><th>Valor</th><th>Status</th><th>Ações</th>';
             html += '</tr></thead><tbody id="tbody-' + categoria.replace(/\s/g, '-') + '">';
 
             fornecedores.forEach((fornecedor, index) => {
@@ -1608,14 +1589,25 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
         }
 
         function criarLinhaFornecedor(categoria, index, fornecedor) {
+            const valorFornecedor = fornecedor.valor || 0;
+            const valorFormatado = valorFornecedor > 0 ? formatarMoeda(valorFornecedor * 100) : 'R$ 0,00';
+
             let html = `
                 <tr data-index="${index}">
-                    <td><input type="text" value="${fornecedor.nome || ''}" 
-                        onchange="atualizarFornecedor('${categoria}', ${index}, 'nome', this.value)" 
+                    <td><input type="text" value="${fornecedor.nome || ''}"
+                        onchange="atualizarFornecedor('${categoria}', ${index}, 'nome', this.value)"
                         placeholder="Nome do fornecedor"></td>
-                    <td><input type="text" value="${fornecedor.contato || ''}" 
-                        onchange="atualizarFornecedor('${categoria}', ${index}, 'contato', this.value)" 
+                    <td><input type="text" value="${fornecedor.contato || ''}"
+                        onchange="atualizarFornecedor('${categoria}', ${index}, 'contato', this.value)"
                         placeholder="Tel, email, @instagram"></td>
+                    <td>
+                        <input type="text"
+                            class="campo-valor-fornecedor"
+                            value="${valorFormatado}"
+                            onblur="atualizarValorFornecedor('${categoria}', ${index}, this.value)"
+                            style="width: 120px; padding: 5px; border: 2px solid var(--cor-dourado); border-radius: 4px; text-align: right;"
+                            placeholder="R$ 0,00">
+                    </td>
                     <td>
                         <select onchange="atualizarFornecedor('${categoria}', ${index}, 'status', this.value); renderizarCasamento();">
                             <option value="Cotando" ${fornecedor.status === 'Cotando' ? 'selected' : ''}>Cotando</option>
@@ -1729,6 +1721,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             dados.casamento[categoria].push({
                 nome: '',
                 contato: '',
+                valor: 0,
                 status: 'Cotando',
                 valorTotal: '',
                 formaPagamento: 'À vista',
@@ -1769,6 +1762,14 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             console.log(`🔄 Atualizando fornecedor: ${categoria}[${index}].${campo} = ${valor}`);
             dados.casamento[categoria][index][campo] = valor;
             salvarDados();
+        }
+
+        function atualizarValorFornecedor(categoria, index, valorFormatado) {
+            const valorNumerico = valorFormatado.replace(/[^\d]/g, '');
+            const valor = (parseFloat(valorNumerico) / 100).toFixed(2);
+            dados.casamento[categoria][index].valor = parseFloat(valor);
+            salvarDados();
+            console.log(`💰 Valor do fornecedor ${dados.casamento[categoria][index].nome || 'sem nome'} atualizado para: ${formatarMoeda(parseFloat(valor) * 100)}`);
         }
 
         function atualizarCampoMoeda(categoria, index, valorFormatado) {
@@ -1843,21 +1844,11 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             const prontos = itens.filter(i => i.situacao === 'Já temos' || i.situacao === 'Vamos ganhar').length;
             const percentual = total > 0 ? Math.round((prontos / total) * 100) : 0;
 
-            const valorComodo = dados.casa[comodo].valor || 0;
-            const valorFormatadoCasa = valorComodo > 0 ? formatarMoeda(valorComodo * 100) : 'R$ 0,00';
-
             card.innerHTML = `
                 <div class="categoria-header" onclick="toggleCategoria('${idConteudo}')">
                     <div class="categoria-titulo">
                         <span class="categoria-icone">🏠</span>${comodo}
                         <span class="expand-indicator" style="margin-left: 10px; transition: transform 0.25s ease;">▼</span>
-                        <div style="margin-left: 15px; font-size: 0.9em; color: var(--cor-dourado); font-weight: 600;">
-                            <input type="text" class="campo-valor-comodo" value="${valorFormatadoCasa}"
-                                onclick="event.stopPropagation();"
-                                onblur="atualizarValorComodo('${comodo}', this.value)"
-                                style="width: 120px; padding: 5px 10px; border: 2px solid var(--cor-dourado); border-radius: 6px; text-align: right; font-weight: 600;"
-                                placeholder="R$ 0,00">
-                        </div>
                     </div>
                     <div class="categoria-acoes">
                         <button class="btn btn-small" onclick="event.stopPropagation(); adicionarItemCasa('${comodo}', '${idConteudo}')">+ Item</button>
@@ -1879,17 +1870,29 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                             <thead>
                                 <tr>
                                     <th>Item</th>
+                                    <th>Valor</th>
                                     <th>Situação</th>
                                     <th>Observações</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="tbody-casa-${comodo.replace(/\s/g, '-')}">
-                                ${itens.map((item, index) => `
+                                ${itens.map((item, index) => {
+                                    const valorItem = item.valor || 0;
+                                    const valorFormatadoItem = valorItem > 0 ? formatarMoeda(valorItem * 100) : 'R$ 0,00';
+                                    return `
                                     <tr data-index="${index}">
-                                        <td><input type="text" value="${item.nome || ''}" 
-                                            onchange="atualizarItemCasa('${comodo}', ${index}, 'nome', this.value)" 
+                                        <td><input type="text" value="${item.nome || ''}"
+                                            onchange="atualizarItemCasa('${comodo}', ${index}, 'nome', this.value)"
                                             placeholder="Nome do item"></td>
+                                        <td>
+                                            <input type="text"
+                                                class="campo-valor-item-casa"
+                                                value="${valorFormatadoItem}"
+                                                onblur="atualizarValorItemCasa('${comodo}', ${index}, this.value)"
+                                                style="width: 100px; padding: 5px; border: 2px solid var(--cor-dourado); border-radius: 4px; text-align: right;"
+                                                placeholder="R$ 0,00">
+                                        </td>
                                         <td>
                                             <select onchange="atualizarItemCasa('${comodo}', ${index}, 'situacao', this.value); renderizarCasa(); atualizarDashboard();">
                                                 <option value="Precisamos comprar" ${item.situacao === 'Precisamos comprar' ? 'selected' : ''}>🛒 Precisamos comprar</option>
@@ -1897,11 +1900,11 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                                                 <option value="Vamos ganhar" ${item.situacao === 'Vamos ganhar' ? 'selected' : ''}>🎁 Vamos ganhar</option>
                                             </select>
                                         </td>
-                                        <td><textarea onchange="atualizarItemCasa('${comodo}', ${index}, 'obs', this.value)" 
+                                        <td><textarea onchange="atualizarItemCasa('${comodo}', ${index}, 'obs', this.value)"
                                             placeholder="Modelo, loja, link...">${item.obs || ''}</textarea></td>
                                         <td><button class="btn-small btn-danger" onclick="removerItemCasa('${comodo}', ${index})">✕</button></td>
-                                    </tr>
-                                `).join('')}
+                                    </tr>`;
+                                }).join('')}
                             </tbody>
                         </table>
                     </div>
@@ -1909,28 +1912,28 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                 </div>
             `;
 
-            // Aplicar máscara de moeda no campo valor
+            // Aplicar máscara de moeda nos campos de valor dos itens
             setTimeout(() => {
-                const campoValor = card.querySelector('.campo-valor-comodo');
-                if (campoValor) {
-                    aplicarMascaraMoeda(campoValor);
-                }
+                card.querySelectorAll('.campo-valor-item-casa').forEach(campo => {
+                    aplicarMascaraMoeda(campo);
+                });
             }, 0);
 
             return card;
         }
 
-        function atualizarValorComodo(comodo, valorFormatado) {
+        function atualizarValorItemCasa(comodo, index, valorFormatado) {
             const valorNumerico = valorFormatado.replace(/[^\d]/g, '');
             const valor = (parseFloat(valorNumerico) / 100).toFixed(2);
-            dados.casa[comodo].valor = parseFloat(valor);
+            dados.casa[comodo][index].valor = parseFloat(valor);
             salvarDados();
-            console.log(`💰 Valor do cômodo ${comodo} atualizado para: ${formatarMoeda(parseFloat(valor) * 100)}`);
+            console.log(`💰 Valor do item ${dados.casa[comodo][index].nome || 'sem nome'} atualizado para: ${formatarMoeda(parseFloat(valor) * 100)}`);
         }
 
         function adicionarItemCasa(comodo, idConteudo) {
             dados.casa[comodo].push({
                 nome: '',
+                valor: 0,
                 situacao: 'Precisamos comprar',
                 obs: ''
             });
