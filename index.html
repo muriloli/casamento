@@ -1132,7 +1132,6 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                     dados.casamento = {};
                     categorias.forEach(cat => {
                         dados.casamento[cat.nome] = cat.fornecedores || [];
-                        dados.casamento[cat.nome].valor = cat.valor || 0;
                         if (cat.icone) {
                             iconesCategoria[cat.nome] = cat.icone;
                         }
@@ -1153,7 +1152,6 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                     dados.casa = {};
                     comodos.forEach(comodo => {
                         dados.casa[comodo.nome] = comodo.itens || [];
-                        dados.casa[comodo.nome].valor = comodo.valor || 0;
                     });
                 } else if (!window.dadosInicializados) {
                     // Inicializar com cômodos padrão apenas na primeira vez
@@ -1296,6 +1294,8 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                         .upsert({
                             chave: 'data_casamento',
                             valor: dados.dataCasamento
+                        }, {
+                            onConflict: 'chave'
                         });
                     if (configError) console.error('❌ Erro ao salvar configuração:', configError);
                 }
@@ -1314,13 +1314,11 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
 
                     if (existe) {
                         // UPDATE categoria existente
-                        const valorCategoria = dados.casamento[nomeCategoria].valor || 0;
                         const { error: updateError } = await supabase
                             .from('categorias_casamento')
                             .update({
                                 icone: icone,
-                                fornecedores: fornecedores,
-                                valor: valorCategoria
+                                fornecedores: fornecedores
                             })
                             .eq('nome', nomeCategoria);
 
@@ -1331,14 +1329,12 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                         }
                     } else {
                         // INSERT nova categoria
-                        const valorCategoria = dados.casamento[nomeCategoria].valor || 0;
                         const { error: insertError } = await supabase
                             .from('categorias_casamento')
                             .insert({
                                 nome: nomeCategoria,
                                 icone: icone,
-                                fornecedores: fornecedores,
-                                valor: valorCategoria
+                                fornecedores: fornecedores
                             });
 
                         if (insertError) {
@@ -1360,12 +1356,10 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
 
                     if (existe) {
                         // UPDATE cômodo existente
-                        const valorComodo = dados.casa[nomeComodo].valor || 0;
                         const { error: updateError } = await supabase
                             .from('comodos_casa')
                             .update({
-                                itens: itens,
-                                valor: valorComodo
+                                itens: itens
                             })
                             .eq('nome', nomeComodo);
 
@@ -1374,13 +1368,11 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                         }
                     } else {
                         // INSERT novo cômodo
-                        const valorComodo = dados.casa[nomeComodo].valor || 0;
                         const { error: insertError } = await supabase
                             .from('comodos_casa')
                             .insert({
                                 nome: nomeComodo,
-                                itens: itens,
-                                valor: valorComodo
+                                itens: itens
                             });
 
                         if (insertError) {

@@ -19,7 +19,6 @@ CREATE TABLE IF NOT EXISTS categorias_casamento (
     nome VARCHAR NOT NULL UNIQUE,
     icone VARCHAR(10),
     fornecedores JSONB DEFAULT '[]',
-    valor DECIMAL(10,2) DEFAULT 0,
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -28,7 +27,6 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
     id SERIAL PRIMARY KEY,
     nome VARCHAR NOT NULL UNIQUE,
     itens JSONB DEFAULT '[]',
-    valor DECIMAL(10,2) DEFAULT 0,
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -50,9 +48,9 @@ CREATE POLICY "Permitir acesso público a comodos_casa" ON comodos_casa
     FOR ALL TO anon USING (true) WITH CHECK (true);
 
 -- ============================================
--- ADICIONAR COLUNA VALOR (se já existir tabelas)
+-- OBSERVAÇÃO IMPORTANTE
 -- ============================================
--- Execute apenas se as tabelas já existirem e não tiverem a coluna 'valor'
-
-ALTER TABLE categorias_casamento ADD COLUMN IF NOT EXISTS valor DECIMAL(10,2) DEFAULT 0;
-ALTER TABLE comodos_casa ADD COLUMN IF NOT EXISTS valor DECIMAL(10,2) DEFAULT 0;
+-- Os valores agora são salvos diretamente dentro do JSONB:
+-- - fornecedores: cada fornecedor tem um campo "valor"
+-- - itens: cada item da casa tem um campo "valor"
+-- Não é necessário criar colunas separadas para valor.
