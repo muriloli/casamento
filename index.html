@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D&L - Nosso Planejamento</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -54,13 +57,27 @@
         }
 
         @keyframes slideInRight {
-            from { transform: translateX(400px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         @keyframes slideOutRight {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(400px); opacity: 0; }
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
         }
 
         /* Botões Utilitários */
@@ -254,8 +271,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Dashboard */
@@ -481,8 +505,16 @@
         }
 
         @keyframes fadeInOut {
-            0%, 100% { opacity: 0; }
-            20%, 80% { opacity: 1; }
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            20%,
+            80% {
+                opacity: 1;
+            }
         }
 
         table {
@@ -512,8 +544,15 @@
         }
 
         @keyframes fadeInRow {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         tbody tr:nth-child(even) {
@@ -528,7 +567,9 @@
             padding: 12px;
         }
 
-        td input, td select, td textarea {
+        td input,
+        td select,
+        td textarea {
             width: 100%;
             border: 1px solid var(--cor-cinza-muito-claro);
             padding: 8px 10px;
@@ -540,7 +581,9 @@
             transition: border-color 0.3s ease;
         }
 
-        td input:focus, td select:focus, td textarea:focus {
+        td input:focus,
+        td select:focus,
+        td textarea:focus {
             outline: none;
             border-color: var(--cor-dourado);
             box-shadow: 0 0 0 3px rgba(210, 180, 140, 0.1);
@@ -578,7 +621,8 @@
             font-size: 0.9em;
         }
 
-        .campo-financeiro input, .campo-financeiro select {
+        .campo-financeiro input,
+        .campo-financeiro select {
             width: 100%;
             max-width: 300px;
             padding: 10px;
@@ -643,8 +687,15 @@
         }
 
         @keyframes modalSlide {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .modal-titulo {
@@ -666,7 +717,8 @@
             font-weight: 500;
         }
 
-        .form-group input, .form-group textarea {
+        .form-group input,
+        .form-group textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid var(--cor-cinza-muito-claro);
@@ -676,7 +728,8 @@
             transition: border-color 0.3s ease;
         }
 
-        .form-group input:focus, .form-group textarea:focus {
+        .form-group input:focus,
+        .form-group textarea:focus {
             outline: none;
             border-color: var(--cor-dourado);
         }
@@ -846,7 +899,8 @@
                 min-width: 100%;
             }
 
-            th, td {
+            th,
+            td {
                 padding: 8px 4px;
                 font-size: 0.85em;
             }
@@ -920,7 +974,8 @@
                 font-size: 0.75em;
             }
 
-            th, td {
+            th,
+            td {
                 padding: 6px 3px;
             }
 
@@ -960,8 +1015,9 @@
         }
     </style>
 </head>
+
 <body>
-            <!-- Notificação de Salvamento -->
+    <!-- Notificação de Salvamento -->
     <div id="saveNotification" class="save-notification">
         <span>💾</span>
         <span>Alterações salvas automaticamente</span>
@@ -1004,7 +1060,7 @@
 
     <!-- Conteúdo Principal -->
     <div class="main-content" id="mainContent">
-        
+
         <!-- Dashboard -->
         <section id="dashboard" class="section active">
             <div class="page-header">
@@ -1405,7 +1461,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
         // ============================================
         // SALVAMENTO AUTOMÁTICO (localStorage)
         // ============================================
-        
+
         // NOTA: Esta seção usa localStorage para salvamento local.
         // FUTURA INTEGRAÇÃO COM FIREBASE:
         // - Substituir localStorage.setItem() por firebase.database().ref().set()
@@ -1564,7 +1620,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
         function mostrarNotificacaoSalvamento() {
             const notification = document.getElementById('saveNotification');
             notification.classList.add('show');
-            
+
             setTimeout(() => {
                 notification.style.animation = 'slideOutRight 0.3s ease';
                 setTimeout(() => {
@@ -1582,16 +1638,16 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             // Remover active de todas as seções
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
+
             // Ativar seção selecionada
             document.getElementById(secaoId).classList.add('active');
             element.classList.add('active');
-            
+
             // Fechar sidebar no mobile
             if (window.innerWidth <= 968) {
                 toggleSidebar();
             }
-            
+
             // Atualizar conteúdo se necessário
             if (secaoId === 'resumo') {
                 atualizarResumo();
@@ -1614,14 +1670,14 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
         function formatarMoeda(valor) {
             const numero = parseFloat(valor.toString().replace(/[^\d]/g, '')) / 100;
             if (isNaN(numero)) return '';
-            return numero.toLocaleString('pt-BR', { 
-                style: 'currency', 
-                currency: 'BRL' 
+            return numero.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
             });
         }
 
         function aplicarMascaraMoeda(input) {
-            input.addEventListener('input', function(e) {
+            input.addEventListener('input', function (e) {
                 let value = e.target.value.replace(/[^\d]/g, '');
                 if (value) {
                     e.target.value = formatarMoeda(value);
@@ -1630,7 +1686,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
         }
 
         function aplicarMascaraData(input) {
-            input.addEventListener('input', function(e) {
+            input.addEventListener('input', function (e) {
                 let value = e.target.value.replace(/\D/g, '');
                 if (value.length >= 2) {
                     value = value.substring(0, 2) + '/' + value.substring(2);
@@ -1650,7 +1706,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             if (dados.dataCasamento) {
                 document.getElementById('dataCasamento').value = dados.dataCasamento;
             }
-            
+
             renderizarCasamento();
             renderizarCasa();
             atualizarDashboard();
@@ -1794,7 +1850,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
 
         function criarDetalhesFinanceiros(categoria, index, fornecedor) {
             const valorFormatado = fornecedor.valorTotal ? formatarMoeda(fornecedor.valorTotal) : '';
-            
+
             let html = `
                 <div class="detalhes-financeiros">
                     <h4>💰 Detalhes Financeiros</h4>
@@ -1843,9 +1899,19 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                         <div class="parcela-item ${parcela.paga ? 'paga' : ''}">
                             <input type="checkbox" ${parcela.paga ? 'checked' : ''} 
                                 onchange="toggleParcela('${categoria}', ${index}, ${parcela.numero - 1}, this.checked)">
-                            <span>Parcela ${parcela.numero}/${fornecedor.parcelas.length}</span>
-                            <span>${formatarMoeda(parcela.valor)}</span>
-                            <span>Venc: ${dataBR}</span>
+                            <span style="font-size: 0.9em; width: 90px;">Parcela ${parcela.numero}/${fornecedor.parcelas.length}</span>
+                            
+                            <input type="text" 
+                                class="campo-valor-parcela"
+                                value="${formatarMoeda(parcela.valor * 100)}"
+                                onblur="atualizarParcela('${categoria}', ${index}, ${parcela.numero - 1}, 'valor', this.value)"
+                                style="width: 110px; padding: 4px; border: 1px solid var(--cor-cinza-muito-claro); border-radius: 4px; text-align: right; font-size: 0.9em; margin-right: 10px;"
+                                placeholder="R$ 0,00">
+                                
+                            <input type="date" 
+                                value="${parcela.vencimento}"
+                                onchange="atualizarParcela('${categoria}', ${index}, ${parcela.numero - 1}, 'vencimento', this.value)"
+                                style="padding: 4px; border: 1px solid var(--cor-cinza-muito-claro); border-radius: 4px; font-size: 0.9em;">
                         </div>
                     `;
                 });
@@ -1854,13 +1920,13 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             }
 
             html += '</div>';
-            
+
             // Aplicar máscara no campo de moeda após renderizar
             setTimeout(() => {
-                const camposMoeda = document.querySelectorAll('.campo-moeda');
+                const camposMoeda = document.querySelectorAll('.campo-moeda, .campo-valor-parcela');
                 camposMoeda.forEach(campo => aplicarMascaraMoeda(campo));
             }, 0);
-            
+
             return html;
         }
 
@@ -1891,15 +1957,15 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                 obs: '',
                 parcelas: []
             });
-            
+
             salvarDados();
             renderizarCasamento();
-            
+
             // Manter expandido e focar no novo campo
             setTimeout(() => {
                 const conteudo = document.getElementById(idConteudo);
                 conteudo.classList.add('expanded');
-                
+
                 const tbody = document.getElementById('tbody-' + categoria.replace(/\s/g, '-'));
                 const ultimaLinha = tbody.querySelector('tr:last-child');
                 if (ultimaLinha) {
@@ -1946,17 +2012,17 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             const valorTotal = parseFloat(fornecedor.valorTotal || 0);
             const numParcelas = parseInt(fornecedor.numeroParcelas) || 1;
             const primeiroVencimento = fornecedor.primeiroVencimento;
-            
+
             if (valorTotal > 0 && numParcelas > 0 && primeiroVencimento) {
                 // Arredondar para 2 casas decimais para evitar dízimas
                 const valorParcela = parseFloat((valorTotal / numParcelas).toFixed(2));
-                
+
                 // Ajustar a última parcela para fechar o valor total exato (centavos)
                 const valorTotalParcelas = valorParcela * numParcelas;
                 const diferenca = parseFloat((valorTotal - valorTotalParcelas).toFixed(2));
-                
+
                 fornecedor.valorParcela = valorParcela;
-                
+
                 // Backup dos status de pagamento
                 const statusPagamento = {};
                 if (fornecedor.parcelas) {
@@ -1964,21 +2030,21 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                         statusPagamento[i] = p.paga;
                     });
                 }
-                
+
                 fornecedor.parcelas = [];
                 const dataInicial = new Date(primeiroVencimento + 'T12:00:00'); // Forçar meio-dia para evitar problemas de fuso
-                
+
                 for (let i = 0; i < numParcelas; i++) {
                     // Lógica robusta de data para manter o dia do mês
                     const dataParcela = new Date(dataInicial);
                     dataParcela.setMonth(dataInicial.getMonth() + i);
-                    
+
                     // Ajuste para fim de mês (ex: 31/01 -> 28/02)
                     // Se o dia mudou (ex: era 31 e virou 1, 2 ou 3), volta para o último dia do mês anterior
                     if (dataParcela.getDate() !== dataInicial.getDate()) {
                         dataParcela.setDate(0);
                     }
-                    
+
                     // Adicionar diferença de centavos na última parcela
                     let valorDestaParcela = valorParcela;
                     if (i === numParcelas - 1) {
@@ -1992,10 +2058,27 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                         paga: statusPagamento[i] || false // Restaurar status
                     });
                 }
-                
+
                 salvarDados();
                 renderizarCasamento();
             }
+        }
+
+        function atualizarParcela(categoria, indexFornecedor, indexParcela, campo, valor) {
+            const parcela = dados.casamento[categoria][indexFornecedor].parcelas[indexParcela];
+
+            if (campo === 'valor') {
+                const valorNumerico = valor.replace(/[^\d]/g, '');
+                const novoValor = parseFloat(valorNumerico) / 100;
+                parcela.valor = parseFloat(novoValor.toFixed(2));
+                console.log(`💰 Parcela ${indexParcela + 1} atualizada para ${formatarMoeda(parcela.valor * 100)}`);
+            } else if (campo === 'vencimento') {
+                parcela.vencimento = valor;
+                console.log(`📅 Data da parcela ${indexParcela + 1} atualizada para ${valor}`);
+            }
+
+            salvarDados();
+            atualizarResumo();
         }
 
         function toggleParcela(categoria, index, parcelaIndex, paga) {
@@ -2066,9 +2149,9 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                             </thead>
                             <tbody id="tbody-casa-${comodo.replace(/\s/g, '-')}">
                                 ${itens.map((item, index) => {
-                                    const valorItem = item.valor || 0;
-                                    const valorFormatadoItem = valorItem > 0 ? formatarMoeda(valorItem * 100) : 'R$ 0,00';
-                                    return `
+                const valorItem = item.valor || 0;
+                const valorFormatadoItem = valorItem > 0 ? formatarMoeda(valorItem * 100) : 'R$ 0,00';
+                return `
                                     <tr data-index="${index}">
                                         <td><input type="text" value="${item.nome || ''}"
                                             onchange="atualizarItemCasa('${comodo}', ${index}, 'nome', this.value)"
@@ -2092,7 +2175,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                                             placeholder="Modelo, loja, link...">${item.obs || ''}</textarea></td>
                                         <td><button class="btn-small btn-danger" onclick="removerItemCasa('${comodo}', ${index})">✕</button></td>
                                     </tr>`;
-                                }).join('')}
+            }).join('')}
                             </tbody>
                         </table>
                     </div>
@@ -2124,15 +2207,15 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                 situacao: 'Precisamos comprar',
                 obs: ''
             });
-            
+
             salvarDados();
             renderizarCasa();
-            
+
             // Manter expandido e focar
             setTimeout(() => {
                 const conteudo = document.getElementById(idConteudo);
                 conteudo.classList.add('expanded');
-                
+
                 const tbody = document.getElementById('tbody-casa-' + comodo.replace(/\s/g, '-'));
                 const ultimaLinha = tbody.querySelector('tr:last-child');
                 if (ultimaLinha) {
@@ -2170,7 +2253,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                 const dataCasamento = new Date(dados.dataCasamento);
                 dataCasamento.setHours(0, 0, 0, 0);
                 const diferenca = Math.ceil((dataCasamento - hoje) / (1000 * 60 * 60 * 24));
-                
+
                 if (diferenca === 0) {
                     document.getElementById('diasRestantes').innerHTML = '🎉<br><span style="font-size: 0.5em;">Hoje!</span>';
                 } else if (diferenca < 0) {
@@ -2185,13 +2268,13 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             // Progresso do casamento
             let totalCategorias = Object.keys(dados.casamento).length;
             let categoriasComEscolhido = 0;
-            
+
             for (const [categoria, fornecedores] of Object.entries(dados.casamento)) {
                 if (fornecedores.some(f => f.status === 'Escolhido')) {
                     categoriasComEscolhido++;
                 }
             }
-            
+
             const percentualCasamento = totalCategorias > 0 ? Math.round((categoriasComEscolhido / totalCategorias) * 100) : 0;
             document.getElementById('progressoCasamento').textContent = percentualCasamento + '%';
             document.getElementById('progressoBarraCasamento').style.width = percentualCasamento + '%';
@@ -2200,12 +2283,12 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             // Progresso da casa
             let totalItens = 0;
             let itensProntos = 0;
-            
+
             for (const [comodo, itens] of Object.entries(dados.casa)) {
                 totalItens += itens.length;
                 itensProntos += itens.filter(i => i.situacao === 'Já temos' || i.situacao === 'Vamos ganhar').length;
             }
-            
+
             const percentualCasa = totalItens > 0 ? Math.round((itensProntos / totalItens) * 100) : 0;
             document.getElementById('progressoCasa').textContent = percentualCasa + '%';
             document.getElementById('progressoBarraCasa').style.width = percentualCasa + '%';
@@ -2214,7 +2297,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             // Parcelas pagas
             let totalParcelas = 0;
             let parcelasPagas = 0;
-            
+
             for (const [categoria, fornecedores] of Object.entries(dados.casamento)) {
                 fornecedores.forEach(f => {
                     if (f.status === 'Escolhido' && f.parcelas) {
@@ -2223,7 +2306,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                     }
                 });
             }
-            
+
             document.getElementById('statusPagamento').textContent = totalParcelas > 0 ? `${parcelasPagas}/${totalParcelas}` : '--';
             document.getElementById('labelPagamento').textContent = totalParcelas > 0 ? `${parcelasPagas} pagas de ${totalParcelas} parcelas` : 'Aguardando parcelas';
         }
@@ -2242,15 +2325,15 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                 if (escolhido) {
                     temDados = true;
                     const icone = iconesCategoria[categoria] || '💼';
-                    
+
                     let parcelasInfo = '';
                     let proximoVencimento = '';
-                    
+
                     if (escolhido.parcelas && escolhido.parcelas.length > 0) {
                         const pagas = escolhido.parcelas.filter(p => p.paga).length;
                         const total = escolhido.parcelas.length;
                         const percentualPago = Math.round((pagas / total) * 100);
-                        
+
                         parcelasInfo = `
                             <div style="margin-top: 10px;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
@@ -2262,7 +2345,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                                 </div>
                             </div>
                         `;
-                        
+
                         const proximaParcela = escolhido.parcelas.find(p => !p.paga);
                         if (proximaParcela) {
                             const dataVenc = new Date(proximaParcela.vencimento).toLocaleDateString('pt-BR');
@@ -2273,7 +2356,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                             `;
                         }
                     }
-                    
+
                     htmlCasamento += `
                         <div class="resumo-item">
                             <div class="resumo-categoria">${icone} ${categoria}</div>
@@ -2351,25 +2434,25 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
         function adicionarNovaCategoria() {
             const nome = document.getElementById('input-nova-categoria').value.trim();
             const icone = document.getElementById('input-icone-categoria').value.trim();
-            
+
             if (!nome) {
                 alert('⚠️ Por favor, insira um nome para a categoria.');
                 return;
             }
-            
+
             if (dados.casamento[nome]) {
                 alert('⚠️ Esta categoria já existe!');
                 return;
             }
-            
+
             // Adicionar categoria
             dados.casamento[nome] = [];
-            
+
             // Adicionar ícone se fornecido
             if (icone) {
                 iconesCategoria[nome] = icone;
             }
-            
+
             salvarDados();
             renderizarCasamento();
             fecharModais();
@@ -2378,20 +2461,20 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
 
         function adicionarNovoComodo() {
             const nome = document.getElementById('input-novo-comodo').value.trim();
-            
+
             if (!nome) {
                 alert('⚠️ Por favor, insira um nome para o cômodo.');
                 return;
             }
-            
+
             if (dados.casa[nome]) {
                 alert('⚠️ Este cômodo já existe!');
                 return;
             }
-            
+
             // Adicionar cômodo
             dados.casa[nome] = [];
-            
+
             salvarDados();
             renderizarCasa();
             fecharModais();
@@ -2477,7 +2560,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
                 }
 
                 const dadosAntigos = JSON.parse(dadosLocais);
-                const dadosBackup = {...dados}; // Backup dos dados atuais
+                const dadosBackup = { ...dados }; // Backup dos dados atuais
 
                 // Sobrescrever com dados locais
                 dados = dadosAntigos;
@@ -2573,7 +2656,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     try {
                         const dadosImportados = JSON.parse(e.target.result);
                         if (confirm('⚠️ Deseja realmente substituir todos os dados atuais pelo backup?\n\nEsta ação não pode ser desfeita.')) {
@@ -2635,7 +2718,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             const textoElement = notification.querySelector('span:last-child');
             textoElement.textContent = mensagem;
             notification.classList.add('show');
-            
+
             setTimeout(() => {
                 notification.style.animation = 'slideOutRight 0.3s ease';
                 setTimeout(() => {
@@ -2647,7 +2730,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
         }
 
         // Fechar modal ao clicar fora
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             const modalCategoria = document.getElementById('modal-nova-categoria');
             const modalComodo = document.getElementById('modal-novo-comodo');
             if (event.target === modalCategoria || event.target === modalComodo) {
@@ -2656,12 +2739,12 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
         }
 
         // Enter para confirmar nos modais
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('input-nova-categoria').addEventListener('keypress', function(e) {
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('input-nova-categoria').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') adicionarNovaCategoria();
             });
 
-            document.getElementById('input-novo-comodo').addEventListener('keypress', function(e) {
+            document.getElementById('input-novo-comodo').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') adicionarNovoComodo();
             });
         });
@@ -2670,7 +2753,7 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
         // INICIALIZAÇÃO
         // ============================================
 
-        window.addEventListener('load', async function() {
+        window.addEventListener('load', async function () {
             console.log('🚀 Iniciando Painel D&L...');
 
             try {
@@ -2689,4 +2772,5 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
         document.getElementById('mobileOverlay').addEventListener('click', toggleSidebar);
     </script>
 </body>
+
 </html>
