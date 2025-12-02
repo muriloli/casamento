@@ -1948,21 +1948,48 @@ CREATE TABLE IF NOT EXISTS comodos_casa (
             const primeiroVencimento = fornecedor.primeiroVencimento;
             
             if (valorTotal > 0 && numParcelas > 0 && primeiroVencimento) {
-                const valorParcela = valorTotal / numParcelas;
-                fornecedor.valorParcela = valorParcela.toFixed(2);
+                // Arredondar para 2 casas decimais para evitar dízimas
+                const valorParcela = parseFloat((valorTotal / numParcelas).toFixed(2));
+                
+                // Ajustar a última parcela para fechar o valor total exato (centavos)
+                const valorTotalParcelas = valorParcela * numParcelas;
+                const diferenca = parseFloat((valorTotal - valorTotalParcelas).toFixed(2));
+                
+                fornecedor.valorParcela = valorParcela;
+                
+                // Backup dos status de pagamento
+                const statusPagamento = {};
+                if (fornecedor.parcelas) {
+                    fornecedor.parcelas.forEach((p, i) => {
+                        statusPagamento[i] = p.paga;
+                    });
+                }
                 
                 fornecedor.parcelas = [];
-                const dataInicial = new Date(primeiroVencimento);
+                const dataInicial = new Date(primeiroVencimento + 'T12:00:00'); // Forçar meio-dia para evitar problemas de fuso
                 
                 for (let i = 0; i < numParcelas; i++) {
+                    // Lógica robusta de data para manter o dia do mês
                     const dataParcela = new Date(dataInicial);
-                    dataParcela.setMonth(dataParcela.getMonth() + i);
+                    dataParcela.setMonth(dataInicial.getMonth() + i);
                     
+                    // Ajuste para fim de mês (ex: 31/01 -> 28/02)
+                    // Se o dia mudou (ex: era 31 e virou 1, 2 ou 3), volta para o último dia do mês anterior
+                    if (dataParcela.getDate() !== dataInicial.getDate()) {
+                        dataParcela.setDate(0);
+                    }
+                    
+                    // Adicionar diferença de centavos na última parcela
+                    let valorDestaParcela = valorParcela;
+                    if (i === numParcelas - 1) {
+                        valorDestaParcela = parseFloat((valorParcela + diferenca).toFixed(2));
+                    }
+
                     fornecedor.parcelas.push({
                         numero: i + 1,
-                        valor: valorParcela,
+                        valor: valorDestaParcela,
                         vencimento: dataParcela.toISOString().split('T')[0],
-                        paga: fornecedor.parcelas[i]?.paga || false
+                        paga: statusPagamento[i] || false // Restaurar status
                     });
                 }
                 
